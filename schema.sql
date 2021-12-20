@@ -26,8 +26,9 @@ CREATE TABLE `cards_players` (
   `x` enum('A','2','3','4','5','6','7','8','9','10','K') DEFAULT NULL,
   `y` enum('R','H','T','B') DEFAULT NULL,
   `num` int(11) DEFAULT NULL,
-  `player` enum('player_1','player_2') NOT NULL,
-  PRIMARY KEY (`player`)
+  `player` enum('player_1','player_2') DEFAULT NULL,
+  KEY `player` (`player`),
+  CONSTRAINT `cards_players_ibfk_1` FOREIGN KEY (`player`) REFERENCES `players` (`player`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -146,4 +147,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-17 21:41:56
+-- Dump completed on 2021-12-20 17:24:30
