@@ -1,5 +1,7 @@
 <?php
 
+require_once './db_connect.php';
+
 function show_cards() {
     global $mysqli;
 
@@ -40,14 +42,12 @@ function reset_cards() {
             
             $sql = "INSERT INTO cards_players (x, y, num, player)
                     VALUES ($key, $random_2, $i, 'player_1')";
-            $st = $mysqli -> prepare($sql);
-            $st -> execute();
+            $mysqli -> query($sql);
         }
         else {
             $sql = "INSERT INTO cards_players (x, y, num, 'player')
                     VALUES ($key, $cards[$key], $i, 'player_1')";
-            $st = $mysqli -> prepare($sql);
-            $st -> execute();
+            $mysqli -> query($sql);
         
             unset($cards[$key]);
         }
@@ -66,14 +66,12 @@ function reset_cards() {
 
             $sql = "INSERT INTO cards_players (x, y, num, 'player')
                     VALUES ($key, $random_2, $i, 'player_2')";
-            $st = $mysqli -> prepare($sql);
-            $st -> execute();
+            $mysqli -> query($sql);
         }
         else {
             $sql = "INSERT INTO cards_players (x, y, num, 'player')
                     VALUES ($key, $cards[$key], $i, 'player_2')";
-            $st = $mysqli -> prepare($sql);
-            $st -> execute();
+            $mysqli -> query($sql);
         
             unset($cards[$key]);
         }
