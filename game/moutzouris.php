@@ -47,7 +47,7 @@ function handle_cards($method) {
 }
 
 function handle_player($method, $request, $input) {
-
+    
 }
 
 function handle_status($method) {
