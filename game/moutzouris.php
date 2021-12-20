@@ -18,7 +18,7 @@ switch($r = array_shift($request)) {
         break;
 }
 
-function handle_board($method) {
+function handle_cards($method) {
     if ($method == 'GET') {
         show_cards();
     }
