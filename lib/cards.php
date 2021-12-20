@@ -1,7 +1,5 @@
 <?php
 
-require_once './db_connect.php';
-
 function show_cards() {
     global $mysqli;
 
@@ -16,6 +14,8 @@ function show_cards() {
 }
 
 function reset_cards() {
+    global $mysqli;
+
     $cards = array("A" => array("H", "B", "T", "R"),
                    "2" => array("H", "B", "T", "R"),
                    "3" => array("H", "B", "T", "R"),
@@ -41,12 +41,12 @@ function reset_cards() {
             }
             
             $sql = "INSERT INTO cards_players (x, y, num, player)
-                    VALUES ($key, $random_2, $i, 'player_1')";
+                    VALUES ('$key', '$random_2', '$i', 'player_1')";
             $mysqli -> query($sql);
         }
         else {
             $sql = "INSERT INTO cards_players (x, y, num, 'player')
-                    VALUES ($key, $cards[$key], $i, 'player_1')";
+                    VALUES ('$key', '$cards[$key]', '$i', 'player_1')";
             $mysqli -> query($sql);
         
             unset($cards[$key]);
@@ -65,12 +65,12 @@ function reset_cards() {
             }
 
             $sql = "INSERT INTO cards_players (x, y, num, 'player')
-                    VALUES ($key, $random_2, $i, 'player_2')";
+                    VALUES ('$key', '$random_2', '$i', 'player_2')";
             $mysqli -> query($sql);
         }
         else {
             $sql = "INSERT INTO cards_players (x, y, num, 'player')
-                    VALUES ($key, $cards[$key], $i, 'player_2')";
+                    VALUES ('$key', '$cards[$key]', '$i', 'player_2')";
             $mysqli -> query($sql);
         
             unset($cards[$key]);
