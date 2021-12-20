@@ -45,7 +45,7 @@ function reset_cards() {
             $mysqli -> query($sql);
         }
         else {
-            $sql = "INSERT INTO cards_players (x, y, num, 'player')
+            $sql = "INSERT INTO cards_players (x, y, num, player)
                     VALUES ('$key', '$cards[$key]', '$i', 'player_1')";
             $mysqli -> query($sql);
         
@@ -64,12 +64,12 @@ function reset_cards() {
                 unset($cards[$key]);
             }
 
-            $sql = "INSERT INTO cards_players (x, y, num, 'player')
+            $sql = "INSERT INTO cards_players (x, y, num, player)
                     VALUES ('$key', '$random_2', '$i', 'player_2')";
             $mysqli -> query($sql);
         }
         else {
-            $sql = "INSERT INTO cards_players (x, y, num, 'player')
+            $sql = "INSERT INTO cards_players (x, y, num, player)
                     VALUES ('$key', '$cards[$key]', '$i', 'player_2')";
             $mysqli -> query($sql);
         
