@@ -22,7 +22,7 @@ switch($r = array_shift($request)) {
         break;
     case 'status':
             if(sizeof($request) == 0) {
-                show_status($method);
+                handle_status($method);
             }
             else {
                 header("HTTP/1.1 404 Not Found");
@@ -50,7 +50,7 @@ function handle_player($method, $request, $input) {
 
 }
 
-function show_status($method) {
+function handle_status($method) {
     if($method == 'GET') {
         show_status();
     }
