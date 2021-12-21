@@ -3,5 +3,5 @@ $(window).on('load', function(){
 });
 
 $(window).on('load', function() {
-    $(".btn").fadeIn(1000);
+    $(".btn").hide().fadeIn(1000);
 })

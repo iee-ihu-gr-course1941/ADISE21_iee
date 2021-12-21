@@ -2,6 +2,8 @@
 
 require_once '../../lib/db_connect.php';
 
+global $mysqli;
+
 session_start();
 
 error_reporting(0);
@@ -15,7 +17,7 @@ if (isset($_POST['submit'])) {
 	$password = md5($_POST['password']);
 
 	$sql = "SELECT * FROM users WHERE email='$email' AND password='$password'";
-	$result = mysqli_query($conn, $sql);
+	$result = mysqli_query($mysqli, $sql);
 	if ($result->num_rows > 0) {
 		$row = mysqli_fetch_assoc($result);
 		$_SESSION['username'] = $row['username'];
@@ -35,9 +37,8 @@ if (isset($_POST['submit'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="./css/style.css">
+	<script src="./js/jquery/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="./js/script.js"></script>
-
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 

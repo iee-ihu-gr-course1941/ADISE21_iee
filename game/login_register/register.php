@@ -2,6 +2,8 @@
 
 require_once '../../lib/db_connect.php';
 
+global $mysqli;
+
 error_reporting(0);
 
 session_start();
@@ -18,13 +20,13 @@ if (isset($_POST['submit'])) {
 
 	if ($password == $cpassword) {
 		$sql = "SELECT * FROM users WHERE email='$email'";
-		$result = mysqli_query($conn, $sql);
+		$result = mysqli_query($mysqli, $sql);
 		if (!$result->num_rows > 0) {
 			$sql = "INSERT INTO users (username, email, password)
 					VALUES ('$username', '$email', '$password')";
-			$result = mysqli_query($conn, $sql);
+			$result = mysqli_query($mysqli, $sql);
 			if ($result) {
-				echo "<script>alert('Wow! User Registration Completed.')</script>";
+				echo "<script>alert('Register Complete!!')</script>";
 				$username = "";
 				$email = "";
 				$_POST['password'] = "";
@@ -51,9 +53,10 @@ if (isset($_POST['submit'])) {
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-	<link rel="stylesheet" type="text/css" href="style.css">
+	<link rel="stylesheet" type="text/css" href="./css/style.css">
 
-	<title>Register Form - Pure Coding</title>
+	<link rel="icon" href="../images/favicon.png">
+	<title>Moutzouris - Card Game</title>
 </head>
 <body>
 	<div class="container">
