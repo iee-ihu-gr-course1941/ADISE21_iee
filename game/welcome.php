@@ -9,6 +9,9 @@
     <script src="./js/jquery/jquery-3.6.0.min.js"></script>
     <script type="text/javascript" src="./js/script_welcome.js"></script>
 
+    <script type="text/javascript" src="./js/moutzouris.js"></script>
+    <link rel="stylesheet" href="./css/moutzouris.css">
+
     <link href="./bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <script src="./bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="./bootstrap/js/bootstrap.min.js"></script>
@@ -28,10 +31,13 @@
         <button onclick="location.href='../login_register/logout.php';">Logout</button>
     </div>
     <p>WELCOME
-    <?php
-        session_start(); 
-        echo $_SESSION['username'];
-    ?>
+        <?php
+            session_start(); 
+            echo $_SESSION['username'];
+        ?>
     </p>
+    <div class="game">
+        
+    </div>
 </body>
 </html>
