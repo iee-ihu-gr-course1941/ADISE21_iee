@@ -28,7 +28,7 @@
         <div class="loader"></div>
     </div>
     <div class="body-container">
-        <button onclick="location.href='../login_register/logout.php';">Logout</button>
+        <button onclick="location.href='./login_register/logout.php';">Logout</button>
     </div>
     <p>WELCOME
         <?php
@@ -36,8 +36,12 @@
             echo $_SESSION['username'];
         ?>
     </p>
-    <div class="game">
-        
+    <div id="game">
+        <button onclick="card_sharing();">Start</button>
+    </div>
+    </br></br>
+    <div id="game_2">
+
     </div>
 </body>
 </html>
