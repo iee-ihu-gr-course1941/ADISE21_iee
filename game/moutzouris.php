@@ -55,7 +55,7 @@ function handle_status($method) {
         show_status();
     }
     else {
-        header('HTTP/1.1405 Method Not Allowed');
+        header('HTTP/1.1 405 Method Not Allowed');
     }
 }
 ?>
