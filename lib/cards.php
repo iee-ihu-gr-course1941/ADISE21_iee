@@ -16,6 +16,10 @@ function show_cards() {
 function reset_cards() {
     global $mysqli;
 
+    $sql = "DELETE FROM cards_players
+            WHERE (player = 'player_1' OR player = 'player_2')";
+    $mysqli -> query($sql);
+
     $cards = array("A" => array("H", "B", "T", "R"),
                    "2" => array("H", "B", "T", "R"),
                    "3" => array("H", "B", "T", "R"),
