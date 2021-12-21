@@ -29,8 +29,8 @@
     </div>
     <p>WELCOME
     <?php
-    session_start(); 
-    echo $_SESSION['username'];
+        session_start(); 
+        echo $_SESSION['username'];
     ?>
     </p>
 </body>
