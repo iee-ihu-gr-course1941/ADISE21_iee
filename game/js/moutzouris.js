@@ -9,13 +9,23 @@ function share_cards_by_data(data) {
             var img = new Image()
             var card = "images/cards/" + o.x + "_" + o.y + ".png"
             img.src = card
-            document.getElementById("game").appendChild(img)
+            img.id = "img_" + i
+            document.getElementById("game_2").appendChild(img)
+
+            document.getElementById("img_" + i).style.cursor = "pointer"
+            document.getElementById("img_" + i).style.marginRight = "15px"
+            document.getElementById("img_" + i).style.marginBottom = "10px"
         }
         else {
             var img = new Image()
             var card = "images/cards/S.png"
             img.src = card
+            img.id = "img_" + i
             document.getElementById("game_2").appendChild(img)
+
+            document.getElementById("img_" + i).style.cursor = "pointer"
+            document.getElementById("img_" + i).style.marginRight = "15px"
+            document.getElementById("img_" + i).style.marginBottom = "10px"
         }
     }
 }
