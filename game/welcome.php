@@ -32,12 +32,20 @@
     </div>
     <p>WELCOME
         <?php
-            session_start(); 
+            session_start();
             echo $_SESSION['username'];
         ?>
     </p>
-    <div id="game">
-        <button onclick="card_sharing();">Start</button>
+    <div id="game" style="display: flex; align-items: center; justify-content: center;">
+        <!--<button onclick="card_sharing();">Start/Reset</button>-->
+        <br>
+        <select id="menu" class="form-select" aria-label="Default select example" style="width: 15%">
+            <option selected>Choose player</option>
+            <option value="1">Player 1</option>
+            <option value="2">Player 2</option>
+        </select>
+        &nbsp;
+        <button id="btn_login" onclick="login_to_game();" type="button" class="btn btn-outline-dark" style="font-family: 'Permanent Marker', cursive; color: white; border: 2px solid black;">Go</button>
     </div>
     </br></br>
     <div id="game_2">
