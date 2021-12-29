@@ -40,6 +40,9 @@ switch($r = array_shift($request)) {
                 header("HTTP/1.1 404 Not Found");
             }
         break;
+    case 'users':
+            handle_user($method);
+        break;
 }
 
 
@@ -72,7 +75,7 @@ function handle_player($method, $request, $input) {
             break;
         case 'player_1':
             case 'player_2':
-                    handle_player($method, $request, $input);
+                    handle_players($method, $request, $input);
                 break;
         default:
                 header("HTTP/1.1 404 Not Found");
@@ -87,6 +90,12 @@ function handle_status($method) {
     }
     else {
         header('HTTP/1.1 405 Method Not Allowed');
+    }
+}
+
+function handle_user($method) {
+    if($method == 'GET') {
+        get_user();
     }
 }
 ?>

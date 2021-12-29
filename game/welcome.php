@@ -31,10 +31,12 @@
         <button onclick="location.href='./login_register/logout.php';">Logout</button>
     </div>
     <p>WELCOME
-        <?php
-            session_start();
-            echo $_SESSION['username'];
-        ?>
+        <p id="paragraph">
+            <?php
+                session_start();
+                echo $_SESSION['username'];
+            ?>
+        </p>
     </p>
     <div id="game" style="display: flex; align-items: center; justify-content: center;">
         <!--<button onclick="card_sharing();">Start/Reset</button>-->

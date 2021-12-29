@@ -13,12 +13,12 @@ function show_players() {
     print json_encode($res -> fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
 
-function handle_player($method, $request, $input) {
+function handle_players($method, $request, $input) {
     if($method == 'GET') {
 		show_player($request);
 	}
     else if($method == 'PUT') {
-        set_player($b, $input);
+        set_player($request, $input);
     }
 }
 

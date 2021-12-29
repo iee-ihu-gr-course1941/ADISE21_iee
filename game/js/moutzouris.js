@@ -1,5 +1,7 @@
 var me = {};
 var game_status = {}
+var i = -1
+var username_
 
 function card_sharing() {
     $.ajax({url: "./moutzouris.php/cards", method: "POST", success: share_cards_by_data});
@@ -35,18 +37,26 @@ function share_cards_by_data(data) {
 
 function login_to_game() {
     var menu = document.getElementById("menu")
-    var val = menu.value
+    var selected_option = menu.options[menu.selectedIndex].value
 
-    var palyer = menu.options[menu.selectedIndex].text
-    card_sharing()
+    var name = document.getElementById("paragraph").innerHTML
 
-    $.ajax({url: "./moutzouris.php/players/"+player, 
+    //card_sharing()
+
+    $.ajax({url: "./moutzouris.php/players/player_"+selected_option, 
         method: 'PUT',
         dataType: "json",
         headers: {"X-Token": me.token},
         contentType: 'application/json',
-        data: JSON.stringify( {username: $('#username').val(), piece_color: p_color}),
+        data: JSON.stringify( {username: name, player: selected_option}),
         success: login_result,
         error: login_error
     })
+}
+
+function login_result(data) {
+	me = data[0];
+    
+	update_info();
+	game_status_update();
 }
