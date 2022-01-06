@@ -15,7 +15,7 @@ function share_cards_by_data(data) {
             var card = "images/cards/" + o.x + "_" + o.y + ".png"
             img.src = card
             img.id = "img_" + i
-            document.getElementById("game_2").appendChild(img)
+            document.getElementById("player_1").appendChild(img)
 
             document.getElementById("img_" + i).style.cursor = "pointer"
             document.getElementById("img_" + i).style.marginRight = "15px"
@@ -26,7 +26,7 @@ function share_cards_by_data(data) {
             var card = "images/cards/S.png"
             img.src = card
             img.id = "img_" + i
-            document.getElementById("game_2").appendChild(img)
+            document.getElementById("player_2").appendChild(img)
 
             document.getElementById("img_" + i).style.cursor = "pointer"
             document.getElementById("img_" + i).style.marginRight = "15px"
@@ -36,10 +36,13 @@ function share_cards_by_data(data) {
 }
 
 function login_to_game() {
+    if($('#username').val()=='') {
+		alert('You have to set a username');
+		return;
+	}
+
     var menu = document.getElementById("menu")
     var selected_option = menu.options[menu.selectedIndex].value
-
-    var name = document.getElementById("paragraph").innerHTML
 
     //card_sharing()
 
@@ -48,15 +51,21 @@ function login_to_game() {
         dataType: "json",
         headers: {"X-Token": me.token},
         contentType: 'application/json',
-        data: JSON.stringify( {username: name, player: selected_option}),
+        data: JSON.stringify({username: $('#username').val(), player: selected_option}),
         success: login_result,
         error: login_error
     })
 }
 
 function login_result(data) {
-	me = data[0];
-    
-	update_info();
-	game_status_update();
+	me = data[0]
+    $("#game").hide()
+
+	// update_info();
+	// game_status_update();
+}
+
+function login_error(data,y,z,c) {
+	var x = data.responseJSON
+	//alert(x.errormesg)
 }

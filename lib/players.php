@@ -25,7 +25,7 @@ function handle_players($method, $request, $input) {
 function show_player($request) {
 	global $mysqli;
 
-	$sql = 'SELECT username, player from players
+	$sql = 'SELECT username, player FROM players
             WHERE player=?';
 
 	$st = $mysqli->prepare($sql);
@@ -38,36 +38,34 @@ function show_player($request) {
 }
 
 function set_player($request, $input) {
-	if(!isset($input['username']) || $input['username'] == '') {
-            header("HTTP/1.1 400 Bad Request");
-            print json_encode(['errormesg'=>"No username given."]);
+	global $mysqli;
+
+	if(!isset($input['username']) || $input['username']=='') {
+		header("HTTP/1.1 400 Bad Request");
+		print json_encode(['errormesg'=>"No username given."]);
 		exit;
 	}
 
-	$username = $input['username'];
+	$username=$input['username'];
 
-	global $mysqli;
-
-	$sql = 'SELECT count(*) as c from players
-            WHERE player = ? AND username IS NOT NULL';
+	$sql = 'SELECT count(*) AS c FROM players
+            WHERE player=("player_1" OR "player_2") AND username IS NOT NULL';
 
 	$st = $mysqli->prepare($sql);
-	$st->bind_param('s',$b);
 	$st->execute();
 
 	$res = $st->get_result();
 	$r = $res->fetch_all(MYSQLI_ASSOC);
 	if($r[0]['c']>0) {
             header("HTTP/1.1 400 Bad Request");
-            print json_encode(['errormesg'=>"Player $b is already set. Please select another color."]);
+            print json_encode(['errormesg'=>"Player $request is already set. Please select another color."]);
 		exit;
 	}
 
-	$sql = 'UPDATE players SET username=?, token=md5(CONCAT( ?, NOW()))
-            WHERE player = ?';
+	$sql = "UPDATE players SET username=?, token = md5(CONCAT( ?, NOW())), player='player_1'";
 
 	$st2 = $mysqli->prepare($sql);
-	$st2->bind_param('sss',$username,$username,$b);
+	$st2->bind_param('sss',$username, $username, $request);
 	$st2->execute();
 	
 	update_game_status();
@@ -76,7 +74,7 @@ function set_player($request, $input) {
             WHERE player=?';
 
 	$st = $mysqli->prepare($sql);
-	$st->bind_param('s',$b);
+	$st->bind_param('s', $request);
 	$st->execute();
 	$res = $st->get_result();
 
