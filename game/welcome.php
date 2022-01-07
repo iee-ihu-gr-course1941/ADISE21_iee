@@ -47,8 +47,8 @@
     <div id="game" style="display: flex; align-items: center; justify-content: center;">
         <br>
         <select id="menu" class="form-select" aria-label="Default select example" style="width: 15%">
-            <option value="1">Player 1</option>
-            <option value="2">Player 2</option>
+            <option value="player_1">Player 1</option>
+            <option value="player_2">Player 2</option>
         </select>
         &nbsp;
         <input id="username" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" style="width: 15%">
@@ -59,7 +59,8 @@
     </br></br>
 
     <div id="player_1"></div>
-    <div></div>
+    <div id="move_div" style="margin: 5%; display: none;"><p style="display: inline;">Δώσε φύλο (Αριθμός, Φιγούρα):</p> <input id='the_move' type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" style="width: 15%; display: inline;">&nbsp;<button  class="btn btn-outline-dark" style="font-family: 'Permanent Marker', cursive; color: white; border: 2px solid black;">ΚΑΝΕ ΤΗΝ ΚΙΝΗΣΗ</button></div>
     <div id="player_2"></div>
+    <div id="game_info"></div>
 </body>
 </html>
