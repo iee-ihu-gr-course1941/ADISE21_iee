@@ -79,7 +79,7 @@ function handle_player($method, $request, $input) {
                 break;
         default:
                 header("HTTP/1.1 404 Not Found");
-                print json_encode(['errormesg'=>"Player $request not found."]);
+                print json_encode(['errormesg'=>"$request not found."]);
             break;
     }
 }

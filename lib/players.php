@@ -49,10 +49,10 @@ function set_player($request, $input) {
 	$username=$input['username'];
 
 	$sql = 'SELECT count(*) AS c FROM players
-            WHERE player=? AND username IS NOT NULL';
+            WHERE player=("player_1" OR "player_2") AND username IS NOT NULL';
 
 	$st = $mysqli->prepare($sql);
-	$st->bind_param('s',$request);
+	//$st->bind_param('s',$request);
 	$st->execute();
 
 	$res = $st->get_result();
@@ -63,20 +63,20 @@ function set_player($request, $input) {
 		exit;
 	}
 
-	$sql = "UPDATE players SET username=?, token=md5(CONCAT( ?, NOW()))
-			WHERE player=?";
+	$sql = "UPDATE players SET username='$username', token=md5(CONCAT( '$username', NOW()))
+			WHERE player=('player_1' OR 'player_2')";
 
 	$st2 = $mysqli->prepare($sql);
-	$st2->bind_param('sss',$username, $username, $request);
+	//$st2->bind_param('sss',$username, $username, $request);
 	$st2->execute();
 	
 	update_game_status();
 
 	$sql = 'SELECT * FROM players
-            WHERE player=?';
+            WHERE player=("player_1" OR "player_2")';
 
 	$st = $mysqli->prepare($sql);
-	$st->bind_param('s', $request);
+	//$st->bind_param('s', $request);
 	$st->execute();
 	$res = $st->get_result();
 

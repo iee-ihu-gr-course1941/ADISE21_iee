@@ -1,7 +1,3 @@
-<?php
-    session_start();
-?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,6 +35,7 @@
     <p>WELCOME
         <span id="paragraph">
             <?php
+                session_start();
                 echo $_SESSION['username'];
             ?>
         </span>

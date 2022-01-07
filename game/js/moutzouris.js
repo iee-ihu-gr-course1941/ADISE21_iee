@@ -1,6 +1,5 @@
 var me = {token:null, player:null};
 var game_status = {};
-var board = {};
 var last_change = new Date().getTime();
 var timer = null;
 
@@ -18,7 +17,6 @@ function share_cards_by_data(data) {
             img.id = "img_" + i
             document.getElementById("player_1").appendChild(img)
 
-            document.getElementById("img_" + i).style.cursor = "pointer"
             document.getElementById("img_" + i).style.marginRight = "15px"
             document.getElementById("img_" + i).style.marginBottom = "10px"
         }
@@ -29,7 +27,6 @@ function share_cards_by_data(data) {
             img.id = "img_" + i
             document.getElementById("player_2").appendChild(img)
 
-            document.getElementById("img_" + i).style.cursor = "pointer"
             document.getElementById("img_" + i).style.marginRight = "15px"
             document.getElementById("img_" + i).style.marginBottom = "10px"
         }
@@ -45,40 +42,38 @@ function login_to_game() {
     var menu = document.getElementById("menu")
     var selected_option = menu.options[menu.selectedIndex].value
 
-    card_sharing()
-
     $.ajax({url: './moutzouris.php/players/' + selected_option, 
-        method: 'PUT',
-        dataType: 'json',
-        headers: {'X-Token': me.token},
-        contentType: 'application/json',
-        data: JSON.stringify({username: $('#username').val(), player: selected_option}),
-        success: login_result,
-        error: login_error
-    });
+                method: 'PUT',
+                dataType: 'json',
+                headers: {'X-Token': me.token},
+                contentType: 'application/json',
+                data: JSON.stringify({username: $('#username').val(), player: selected_option}),
+                success: login_result,
+                error: login_error})
 }
 
 function login_result(data) {
 	me = data[0]
-    document.getElementsById("game").style.display = "none"
-    document.getElementsById("move_div").style.display = "block"
+    card_sharing()
+    document.getElementById("game").style.display = "none"
+    document.getElementById("move_div").style.display = "block"
 
 	update_info();
 	game_status_update();
 }
 
-function login_error(data,y,z,c) {
+function login_error(data, y, z, c) {
 	var x = data.responseJSON
 	alert(x.errormesg)
 }
 
 function update_info() {
-    $('#game_info').html("I am : "+me.player+", my name is "+me.username +'<br>Token='+me.token+'<br>Game state: '+game_status.status+', '+ game_status.p_turn+' must play now.');
+    $('#game_info').html("I am : " + me.player + ", my name is " + me.username + '<br>Token=' + me.token + '<br>Game state: ' + game_status.status + ', ' + game_status.p_turn + ' must play now.');
 }
 
 function game_status_update() {
 	clearTimeout(timer);
-	$.ajax({url: "moutzouris.php/status/", success: update_status, headers: {"X-Token": me.token} });
+	$.ajax({url: "./moutzouris.php/status/", success: update_status, headers: {"X-Token": me.token} });
 }
 
 function update_status(data) {
