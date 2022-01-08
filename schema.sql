@@ -42,30 +42,6 @@ LOCK TABLES `cards_players` WRITE;
 UNLOCK TABLES;
 
 --
--- Table structure for table `cards_table`
---
-
-DROP TABLE IF EXISTS `cards_table`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `cards_table` (
-  `id` int(11) DEFAULT NULL,
-  `x` enum('A','2','3','4','5','6','7','8','9','10','K') NOT NULL,
-  `y` enum('R','H','T','B') NOT NULL,
-  PRIMARY KEY (`x`,`y`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `cards_table`
---
-
-LOCK TABLES `cards_table` WRITE;
-/*!40000 ALTER TABLE `cards_table` DISABLE KEYS */;
-/*!40000 ALTER TABLE `cards_table` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `game_status`
 --
 
@@ -88,6 +64,25 @@ LOCK TABLES `game_status` WRITE;
 /*!40000 ALTER TABLE `game_status` DISABLE KEYS */;
 /*!40000 ALTER TABLE `game_status` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER game_status_update BEFORE UPDATE
+    ON game_status
+    FOR EACH ROW BEGIN
+        SET NEW.last_change = NOW();
+    END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `players`
@@ -99,7 +94,8 @@ DROP TABLE IF EXISTS `players`;
 CREATE TABLE `players` (
   `username` varchar(20) DEFAULT NULL,
   `player` enum('player_1','player_2') NOT NULL,
-  `cards_num` int(11) DEFAULT NULL,
+  `token` varchar(32) DEFAULT NULL,
+  `last_action` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`player`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -121,7 +117,7 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
@@ -137,6 +133,10 @@ LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping routines for database 'moutzouris_db'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -147,4 +147,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-12-20 17:24:30
+-- Dump completed on 2022-01-08 21:31:54
