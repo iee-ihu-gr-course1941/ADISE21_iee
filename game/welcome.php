@@ -48,7 +48,7 @@
             <option value="player_2">Player 2</option>
         </select>
         &nbsp;
-        <input id="username" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" style="width: 15%">
+        <input id="username" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" style="width: 15%" readonly>
         &nbsp;
         <button id="btn_login" onclick="login_to_game();" type="button" class="btn btn-outline-dark" style="font-family: 'Permanent Marker', cursive; color: white; border: 2px solid black;">Go</button>
     </div>

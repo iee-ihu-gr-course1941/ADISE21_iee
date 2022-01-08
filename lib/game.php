@@ -3,6 +3,8 @@
 function show_status() {
     global $mysqli;
 
+	check_abort();
+
     $sql = "SELECT * FROM game_status";
     $st = $mysqli -> prepare($sql);
 
@@ -11,6 +13,16 @@ function show_status() {
 
     header('Content-type: application/json');
     print json_encode($res -> fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+}
+
+function check_abort() {
+	global $mysqli;
+	
+	$sql = "UPDATE game_status SET status='aborded', result=IF(p_turn = 'player_1', 'player_2'), p_turn=NULL
+			WHERE p_turn IS NOT NULL AND last_change<(NOW()-INTERVAL 5 MINUTE) AND status='started'";
+
+	$st = $mysqli->prepare($sql);
+	$r = $st->execute();
 }
 
 function update_game_status() {
@@ -22,12 +34,12 @@ function update_game_status() {
 	$new_status = null;
 	$new_turn = null;
 	
-	$st3 = $mysqli->prepare('SELECT count(*) AS aborted FROM game_status
+	$st3 = $mysqli->prepare('SELECT count(*) AS aborded FROM game_status
                             WHERE last_change < (NOW() - INTERVAL 5 MINUTE)');
 
 	$st3->execute();
 	$res3 = $st3->get_result();
-	$aborted = $res3->fetch_assoc()['aborted'];
+	$aborted = $res3->fetch_assoc()['aborded'];
 
 	if($aborted>0) {
 		$sql = "UPDATE players SET username = NULL, token = NULL
@@ -84,14 +96,4 @@ function read_status() {
 	$status = $res->fetch_assoc();
 	return($status);
 }
-
-function check_abort() {
-	global $mysqli;
-	
-	$sql = "UPDATE game_status SET status='aborded', result = if(p_turn = 'player_1','player_2'), p_turn = NULL WHERE p_turn IS NOT NULL AND last_change < (now()-INTERVAL 5 MINUTE) AND STATUS = 'started'";
-	
-    $st = $mysqli->prepare($sql);
-	$r = $st->execute();
-}
-
 ?>

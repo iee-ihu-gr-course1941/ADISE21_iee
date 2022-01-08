@@ -1,7 +1,15 @@
-var me = {token:null, player:null};
-var game_status = {};
-var last_change = new Date().getTime();
-var timer = null;
+var me = {token:null, player:null}
+var game_status = {}
+var last_change = new Date().getTime()
+var timer = null
+
+$(function() {
+    var input = document.getElementById("username")
+    var text = document.getElementById("paragraph").innerHTML
+    var result = text.trim()
+
+    input.value = result
+})
 
 function card_sharing() {
     $.ajax({url: "./moutzouris.php/cards", method: "POST", success: share_cards_by_data});
@@ -34,20 +42,14 @@ function share_cards_by_data(data) {
 }
 
 function login_to_game() {
-    if($('#username').val()=='') {
-		alert('You have to set a username');
-		return;
-	}
+    var player = $('#menu').val()
 
-    var menu = document.getElementById("menu")
-    var selected_option = menu.options[menu.selectedIndex].value
-
-    $.ajax({url: './moutzouris.php/players/' + selected_option, 
+    $.ajax({url: './moutzouris.php/players/' + player, 
                 method: 'PUT',
                 dataType: 'json',
                 headers: {'X-Token': me.token},
                 contentType: 'application/json',
-                data: JSON.stringify({username: $('#username').val(), player: selected_option}),
+                data: JSON.stringify({username: $('#username').val(), player: player}),
                 success: login_result,
                 error: login_error})
 }
@@ -58,7 +60,6 @@ function login_result(data) {
     document.getElementById("game").style.display = "none"
     document.getElementById("move_div").style.display = "block"
 
-	update_info();
 	game_status_update();
 }
 
@@ -77,23 +78,25 @@ function game_status_update() {
 }
 
 function update_status(data) {
-	last_change = new Date().getTime();
-	var game_stat_old = game_status;
-	game_status = data[0];
-	update_info();
-	clearTimeout(timer);
+	last_change = new Date().getTime()
+
+    var game_stat_old = game_status
+    var game_status = data[0]
+
+    update_info();
+	clearTimeout(timer)
 	if(game_status.p_turn == me.player &&  me.player != null) {
-		x=0;
+		x=0
 		// do play
 		if(game_stat_old.p_turn != game_status.p_turn) {
-			fill_board();
+			card_sharing()
 		}
-		$('#move_div').show(1000);
-		timer=setTimeout(function() { game_status_update();}, 15000);
+		$('#move_div').show(1000)
+		timer = setTimeout(function() { game_status_update()}, 15000)
 	} else {
 		// must wait for something
-		$('#move_div').hide(1000);
-		timer=setTimeout(function() { game_status_update();}, 4000);
+		$('#move_div').hide(1000)
+		timer = setTimeout(function() { game_status_update()}, 4000)
 	}
  	
 }
