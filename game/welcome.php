@@ -56,7 +56,8 @@
     </br></br>
 
     <div id="player_1"></div>
-    <div id="move_div" style="margin: 5%; display: none;"><p style="display: inline;">Δώσε φύλο (Αριθμός, Φιγούρα):</p> <input id='the_move' type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" style="width: 15%; display: inline;">&nbsp;<button  onclick="do_move();" class="btn btn-outline-dark" style="font-family: 'Permanent Marker', cursive; color: white; border: 2px solid black;">ΚΑΝΕ ΤΗΝ ΚΙΝΗΣΗ</button></div>
+    <button  id="btn-remove" onclick="do_remove();" class="btn btn-outline-dark" style="margin: 5%; font-family: 'Permanent Marker', cursive; color: white; border: 2px solid black; display: none;">ΔΙΩΞΕ ΦΥΛΑ</button>
+    <div id="move_div" style="margin: 5%; display: none;"><p style="display: inline;">Διάλεξε φύλο (0 - ...):</p> <input id='the_move' type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" style="width: 15%; display: inline;">&nbsp;<button  onclick="do_move();" class="btn btn-outline-dark" style="font-family: 'Permanent Marker', cursive; color: white; border: 2px solid black;">ΠΑΡΕ ΦΥΛΟ</button></div>
     <div id="player_2"></div>
     <div id="game_info"></div>
 </body>

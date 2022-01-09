@@ -27,6 +27,9 @@ switch($r = array_shift($request)) {
                 case null:
                         handle_cards($method);
                     break;
+                case 'remove':
+                        handle_remove($method, $input);
+                    break;
                 case 'card':
                         handle_card($method, $request[0], $request[1], $input);
                     break;
@@ -34,6 +37,7 @@ switch($r = array_shift($request)) {
                     header("HTTP/1.1 404 Not Found");
                 break;
             }
+            break;
     case 'players':
             handle_player($method, $request, $input);
         break;
@@ -56,7 +60,7 @@ switch($r = array_shift($request)) {
 
 function handle_cards($method) {
     if ($method == 'GET') {
-        show_cards();
+        read_cards();
     }
     else if ($method == 'POST') {
         reset_cards();
@@ -106,7 +110,21 @@ function handle_user($method) {
 
 function handle_card($method, $x, $y, $input) {
     if($method == 'GET') {
+        show_card($x, $y);
+    } else if ($method == 'PUT') {
+        move_card($x, $y, $input['token']);
+    }    
+}
 
+function handle_remove($method, $input) {
+    if($method == 'PUT') {
+        remove_cards($input);
+    }
+    else if($method == 'GET') {
+        
+    }
+    else {
+        header('HTTP/1.1 405 Method Not Allowed');
     }
 }
 ?>

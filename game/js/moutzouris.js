@@ -12,7 +12,7 @@ $(function() {
 })
 
 function card_sharing() {
-    $.ajax({url: "./moutzouris.php/cards", method: "POST", success: share_cards_by_data});
+    $.ajax({url: "./moutzouris.php/cards", method: "POST", headers: {'X-Token': me.token}, success: share_cards_by_data});
 }
 
 function share_cards_by_data(data) {
@@ -56,11 +56,14 @@ function login_to_game() {
 
 function login_result(data) {
 	me = data[0]
-    card_sharing()
-    document.getElementById("game").style.display = "none"
-    document.getElementById("move_div").style.display = "block"
 
-	game_status_update();
+    card_sharing()
+
+    document.getElementById("game").style.display = "none"
+    document.getElementById("btn-remove").style.display = "block"
+    //document.getElementById("move_div").style.display = "block"
+
+	//game_status_update();
 }
 
 function login_error(data, y, z, c) {
@@ -68,63 +71,72 @@ function login_error(data, y, z, c) {
 	alert(x.errormesg)
 }
 
-function update_info() {
-    $('#game_info').html("I am : " + me.player + ", my name is " + me.username + '<br>Token=' + me.token + '<br>Game state: ' + game_status.status + ', ' + game_status.p_turn + ' must play now.');
-}
+// function update_info() {
+//     $('#game_info').html("I am : " + me.player + ", my name is " + me.username + '<br>Token=' + me.token + '<br>Game state: ' + game_status.status + ', ' + game_status.p_turn + ' must play now.');
+// }
 
-function game_status_update() {
-	clearTimeout(timer);
-	$.ajax({url: "./moutzouris.php/status/", success: update_status, headers: {"X-Token": me.token} });
-}
+// function game_status_update() {
+// 	clearTimeout(timer);
+// 	$.ajax({url: "./moutzouris.php/status/", success: update_status, headers: {"X-Token": me.token} });
+// }
 
-function update_status(data) {
-	last_change = new Date().getTime()
+// function update_status(data) {
+// 	last_change = new Date().getTime()
 
-    var game_stat_old = game_status
-    var game_status = data[0]
+//     var game_stat_old = game_status
+//     var game_status = data[0]
 
-    update_info();
-	clearTimeout(timer)
-	if(game_status.p_turn == me.player &&  me.player != null) {
-		x=0
-		// do play
-		card_sharing()
+//     update_info();
+// 	clearTimeout(timer)
+// 	if(game_status.p_turn == me.player &&  me.player != null) {
+// 		x=0
+// 		// do play
+//         $('#move_div').show(1000)
+// 		timer = setTimeout(function() { game_status_update()}, 15000);
+// 	}
+//     else {
+//         // must wait for something
+//         $('#move_div').hide(1000)
+// 		timer = setTimeout(function() { game_status_update()}, 4000);
+//     }	
+// }
 
-        $('#move_div').show(1000)
-		timer = setTimeout(function() { game_status_update()}, 15000);
-	}
-    else {
-        $('#move_div').hide(1000)
-		timer = setTimeout(function() { game_status_update()}, 4000);
-    }	
-}
+function do_remove() {
+    var player = $('#menu').val()
 
-function do_move() {
-	var s = $('#the_move').val()
-	
-	var a = s.trim().split(/[ ]+/)
-	if(a.length != 2) {
-		alert('Must give 2 characters')
-		return
-	}
-
-	$.ajax({url: "moutzouris.php/cards/card/" + a[0] + '/' + a[1], 
+    $.ajax({url: "moutzouris.php/cards/remove/", 
 			method: 'PUT',
 			dataType: "json",
 			contentType: 'application/json',
-			data: JSON.stringify( {x: a[0], y: a[1]}),
 			headers: {"X-Token": me.token},
 			success: move_result,
 			error: login_error
         })
 }
 
+// function do_move() {
+// 	var s = $('#the_move').val()
+	
+// 	var a = s.trim().split(/[ ]+/)
+
+// 	if(a.length != 2) {
+// 		alert('Must give 2 characters')
+// 		return
+// 	}
+
+// 	$.ajax({url: "moutzouris.php/cards/card/" + a[0] + '/' + a[1], 
+// 			method: 'PUT',
+// 			dataType: "json",
+// 			contentType: 'application/json',
+// 			data: JSON.stringify( {x: a[0], y: a[1]}),
+// 			headers: {"X-Token": me.token},
+// 			success: move_result,
+// 			error: login_error
+//         })
+// }
+
 function move_result(data){
-	game_status_update();
+	game_status_update()
 
-	fill_cards_by_data(data);
-}
-
-function fill_cards_by_data() {
-
+    share_cards_by_data(data)
 }

@@ -108,7 +108,7 @@ function current_player($token) {
     }
 
 	$sql = 'SELECT * FROM players
-            WHERE token = ?';
+            WHERE token=?';
 
 	$st = $mysqli->prepare($sql);
 	$st->bind_param('s',$token);

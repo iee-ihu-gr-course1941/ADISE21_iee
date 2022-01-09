@@ -1,17 +1,28 @@
 <?php
 
-function show_cards() {
-    global $mysqli;
+// function show_cards($input) {
+// 	global $mysqli;
+	
+// 	$b = current_player($input['token']);
+// 	if($b) {
+// 		show_cards_by_player($b);
+// 	} else {
+// 		header('Content-type: application/json');
+// 		print json_encode(read_cards(), JSON_PRETTY_PRINT);
+// 	}
+// }
 
-    $sql = "SELECT x, y, player FROM cards_players";
-    $st = $mysqli -> prepare($sql);
+// function read_cards() {
+// 	global $mysqli;
 
-    $st -> execute();
-    $res = $st -> get_result();
+// 	$sql = 'SELECT * FROM cards_players';
 
-    header('Content-type: application/json');
-    print json_encode($res -> fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
-}
+// 	$st = $mysqli->prepare($sql);
+// 	$st->execute();
+// 	$res = $st->get_result();
+
+// 	return($res->fetch_all(MYSQLI_ASSOC));
+// }
 
 function reset_cards() {
     global $mysqli;
@@ -81,8 +92,153 @@ function reset_cards() {
         }
     }
 
+    global $mysqli;
 
-    show_cards();
+	$sql = 'SELECT x, y, player FROM cards_players';
+
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	$res = $st->get_result();
+
+	header('Content-type: application/json');
+	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+}
+
+// function show_cards_by_player($b) {
+// 	global $mysqli;
+
+// 	$orig_cards = read_cards_player($b);
+//     $cards_p = convert_cards($orig_cards);
+// 	$status = read_status();
+// 	if($status['status']=='started' && $status['p_turn']==$b && $b!=null) {
+// 		// It my turn !!!!
+// 		$n = add_valid_moves_to_cards($cards_p, $b);
+		
+// 		// Εάν n==0, τότε έχασα !!!!!
+// 		// Θα πρέπει να ενημερωθεί το game_status.
+// 	}
+
+// 	header('Content-type: application/json');
+// 	print json_encode($orig_cards, JSON_PRETTY_PRINT);
+// }
+
+// function read_cards_player($player) {
+//     global $mysqli;
+
+// 	$sql = "SELECT * FROM cards
+//             WHERE player=?";
+
+//     $st->bind_param('s',$player);
+//     $st->execute();
+//     $res = $st->get_result();
+
+// 	return($res->fetch_all(MYSQLI_ASSOC));
+// }
+
+// function convert_cards(&$orig_board) {
+// 	$cards_p = [];
+
+// 	foreach($orig_board as $i=>&$row) {
+// 		$cards_p[] = &$row;
+// 	} 
+
+// 	return($cards_p);
+// }
+
+// function add_valid_moves_to_cards(&$cards, $b) {
+// 	$number_of_moves = 0;
+	
+// 	for($x=1;$x<9;$x++) {
+// 		for($y=1;$y<9;$y++) {
+// 			$number_of_moves += add_valid_moves_to_card($board, $b, $x, $y);
+// 		}
+// 	}
+
+// 	return($number_of_moves);
+// }
+
+// function add_valid_moves_to_card(&$board, $b, $x, $y) {
+// 	$number_of_moves=0;
+// 	if($board[$x][$y]['piece_color']==$b) {
+// 		switch($board[$x][$y]['piece']){
+// 			case 'P': $number_of_moves+=pawn_moves($board,$b,$x,$y);break;
+// 			case 'K': $number_of_moves+=king_moves($board,$b,$x,$y);break;
+// 			case 'Q': $number_of_moves+=queen_moves($board,$b,$x,$y);break;
+// 			case 'R': $number_of_moves+=rook_moves($board,$b,$x,$y);break;
+// 			case 'N': $number_of_moves+=knight_moves($board,$b,$x,$y);break;
+// 			case 'B': $number_of_moves+=bishop_moves($board,$b,$x,$y);break;
+// 		}
+// 	} 
+
+// 	return($number_of_moves);
+// }
+
+// function show_card($x, $y) {
+// 	global $mysqli;
+	
+// 	$sql = 'SELECT * FROM cards_players
+//             WHERE x=? AND y=?';
+
+// 	$st = $mysqli->prepare($sql);
+// 	$st->bind_param('ii',$x,$y);
+// 	$st->execute();
+// 	$res = $st->get_result();
+
+// 	header('Content-type: application/json');
+// 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+// }
+
+// function move_card($x, $y, $token) {
+	
+// 	if($token == null || $token == '') {
+// 		header("HTTP/1.1 400 Bad Request");
+// 		print json_encode(['errormesg'=>"token is not set."]);
+// 		exit;
+// 	}
+	
+// 	$player = current_player($token);
+// 	if($player == null ) {
+// 		header("HTTP/1.1 400 Bad Request");
+// 		print json_encode(['errormesg'=>"You are not a player of this game."]);
+// 		exit;
+// 	}
+
+// 	$status = read_status();
+// 	if($status['status'] != 'started') {
+// 		header("HTTP/1.1 400 Bad Request");
+// 		print json_encode(['errormesg'=>"Game is not in action."]);
+// 		exit;
+// 	}
+
+// 	if($status['p_turn'] != $player) {
+// 		header("HTTP/1.1 400 Bad Request");
+// 		print json_encode(['errormesg'=>"It is not your turn."]);
+// 		exit;
+// 	}
+
+// 	$sql = "SELECT x, y FROM cards_players
+// 			WHERE ";
+
+// 	header("HTTP/1.1 400 Bad Request");
+// 	print json_encode(['errormesg'=>"This move is illegal."]);
+
+// 	exit;
+// }
+
+function remove_cards($input) {
+	global $mysqli;
+
+	$player = $input['player'];
+
+	if($player == 'player_1') {
+		$sql = 'SELECT x, y FROM cards_players
+				WHERE player="player_1"';
+
+		
+	}
+	else {
+
+	}
 }
 
 ?>
