@@ -88,15 +88,43 @@ function update_status(data) {
 	if(game_status.p_turn == me.player &&  me.player != null) {
 		x=0
 		// do play
-		if(game_stat_old.p_turn != game_status.p_turn) {
-			card_sharing()
-		}
-		$('#move_div').show(1000)
-		timer = setTimeout(function() { game_status_update()}, 15000)
-	} else {
-		// must wait for something
-		$('#move_div').hide(1000)
-		timer = setTimeout(function() { game_status_update()}, 4000)
+		card_sharing()
+
+        $('#move_div').show(1000)
+		timer = setTimeout(function() { game_status_update()}, 15000);
 	}
- 	
+    else {
+        $('#move_div').hide(1000)
+		timer = setTimeout(function() { game_status_update()}, 4000);
+    }	
+}
+
+function do_move() {
+	var s = $('#the_move').val()
+	
+	var a = s.trim().split(/[ ]+/)
+	if(a.length != 2) {
+		alert('Must give 2 characters')
+		return
+	}
+
+	$.ajax({url: "moutzouris.php/cards/card/" + a[0] + '/' + a[1], 
+			method: 'PUT',
+			dataType: "json",
+			contentType: 'application/json',
+			data: JSON.stringify( {x: a[0], y: a[1]}),
+			headers: {"X-Token": me.token},
+			success: move_result,
+			error: login_error
+        })
+}
+
+function move_result(data){
+	game_status_update();
+
+	fill_cards_by_data(data);
+}
+
+function fill_cards_by_data() {
+
 }

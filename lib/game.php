@@ -18,7 +18,7 @@ function show_status() {
 function check_abort() {
 	global $mysqli;
 	
-	$sql = "UPDATE game_status SET status='aborded', result=IF(p_turn = 'player_1', 'player_2'), p_turn=NULL
+	$sql = "UPDATE game_status SET status='aborded', p_turn=NULL
 			WHERE p_turn IS NOT NULL AND last_change<(NOW()-INTERVAL 5 MINUTE) AND status='started'";
 
 	$st = $mysqli->prepare($sql);

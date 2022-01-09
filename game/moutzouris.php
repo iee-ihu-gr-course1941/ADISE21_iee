@@ -27,8 +27,13 @@ switch($r = array_shift($request)) {
                 case null:
                         handle_cards($method);
                     break;
+                case 'card':
+                        handle_card($method, $request[0], $request[1], $input);
+                    break;
+                default: 
+                    header("HTTP/1.1 404 Not Found");
+                break;
             }
-        break;
     case 'players':
             handle_player($method, $request, $input);
         break;
@@ -96,6 +101,12 @@ function handle_status($method) {
 function handle_user($method) {
     if($method == 'GET') {
         get_user();
+    }
+}
+
+function handle_card($method, $x, $y, $input) {
+    if($method == 'GET') {
+
     }
 }
 ?>
