@@ -15,14 +15,16 @@ function show_players() {
 
 function handle_players($method, $request, $input) {
     if($method == 'GET') {
-		show_player($request);
+		show_player($input);
 	} else if($method == 'PUT') {
         set_player($request, $input);
     }
 }
 
-function show_player($request) {
+function show_player($input) {
 	global $mysqli;
+
+	$request = $input['player'];
 
 	$sql = 'SELECT username, player FROM players
             WHERE player=?';

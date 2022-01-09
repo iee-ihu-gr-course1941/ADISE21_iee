@@ -23,12 +23,11 @@ DROP TABLE IF EXISTS `cards_players`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cards_players` (
-  `x` enum('A','2','3','4','5','6','7','8','9','10','K') DEFAULT NULL,
-  `y` enum('R','H','T','B') DEFAULT NULL,
+  `x` enum('A','2','3','4','5','6','7','8','9','10','K') NOT NULL,
+  `y` enum('R','H','T','B') NOT NULL,
   `num` int(11) DEFAULT NULL,
   `player` enum('player_1','player_2') DEFAULT NULL,
-  KEY `player` (`player`),
-  CONSTRAINT `cards_players_ibfk_1` FOREIGN KEY (`player`) REFERENCES `players` (`player`)
+  PRIMARY KEY (`x`,`y`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -38,6 +37,7 @@ CREATE TABLE `cards_players` (
 
 LOCK TABLES `cards_players` WRITE;
 /*!40000 ALTER TABLE `cards_players` DISABLE KEYS */;
+INSERT INTO `cards_players` VALUES ('A','R',21,'player_2'),('A','H',6,'player_2'),('A','T',20,'player_2'),('A','B',12,'player_2'),('2','R',7,'player_2'),('2','H',4,'player_1'),('2','T',3,'player_2'),('2','B',13,'player_1'),('3','R',14,'player_2'),('3','H',10,'player_1'),('3','T',5,'player_2'),('3','B',12,'player_1'),('4','R',14,'player_1'),('4','H',2,'player_1'),('4','T',9,'player_1'),('4','B',6,'player_1'),('5','R',16,'player_2'),('5','H',1,'player_1'),('5','T',15,'player_2'),('5','B',19,'player_1'),('6','R',11,'player_2'),('6','H',7,'player_1'),('6','T',16,'player_1'),('6','B',15,'player_1'),('7','R',8,'player_2'),('7','H',11,'player_1'),('7','T',4,'player_2'),('7','B',17,'player_1'),('8','R',19,'player_2'),('8','H',2,'player_2'),('8','T',10,'player_2'),('8','B',9,'player_2'),('9','R',20,'player_1'),('9','H',3,'player_1'),('9','T',18,'player_1'),('9','B',8,'player_1'),('10','R',18,'player_2'),('10','H',1,'player_2'),('10','T',17,'player_2'),('10','B',13,'player_2'),('K','B',5,'player_1');
 /*!40000 ALTER TABLE `cards_players` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -106,6 +106,7 @@ CREATE TABLE `players` (
 
 LOCK TABLES `players` WRITE;
 /*!40000 ALTER TABLE `players` DISABLE KEYS */;
+INSERT INTO `players` VALUES ('it185157','player_1','bd8a50bb28a0105dbf185df889f3fd0e',NULL);
 /*!40000 ALTER TABLE `players` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -122,7 +123,7 @@ CREATE TABLE `users` (
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -131,6 +132,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'it185157','xarhs.vrahas@gmail.com','bb7be391ba56df263a7c1b02b6327794');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,4 +149,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-01-08 21:31:54
+-- Dump completed on 2022-01-09 11:33:01
