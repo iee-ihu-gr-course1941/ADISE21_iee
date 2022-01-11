@@ -37,13 +37,13 @@ switch($r = array_shift($request)) {
                     header("HTTP/1.1 404 Not Found");
                 break;
             }
-            break;
+        break;
     case 'players':
             handle_player($method, $request, $input);
         break;
     case 'status':
             if(sizeof($request) == 0) {
-                handle_status($method);
+                handle_status($method, $input);
             }
             else {
                 header("HTTP/1.1 404 Not Found");
@@ -93,9 +93,9 @@ function handle_player($method, $request, $input) {
     }
 }
 
-function handle_status($method) {
+function handle_status($method, $input) {
     if($method == 'GET') {
-        show_status();
+        show_status($input["token"]);
     }
     else {
         header('HTTP/1.1 405 Method Not Allowed');
@@ -118,7 +118,7 @@ function handle_card($method, $x, $y, $input) {
 
 function handle_remove($method, $input) {
     if($method == 'POST') {
-        remove_cards($input);
+        remove_cards($input['token']);
     }
     else {
         header('HTTP/1.1 405 Method Not Allowed');

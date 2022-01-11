@@ -1,9 +1,9 @@
 <?php
 
-function show_status() {
+function show_status($token) {
     global $mysqli;
 
-	check_abort();
+	check_abort($token);
 
     $sql = "SELECT * FROM game_status";
     $st = $mysqli -> prepare($sql);
@@ -15,14 +15,43 @@ function show_status() {
     print json_encode($res -> fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
 
-function check_abort() {
+function check_abort($token_) {
 	global $mysqli;
 	
-	$sql = "UPDATE game_status SET status='aborded', p_turn=NULL
-			WHERE p_turn IS NOT NULL AND last_change<(NOW()-INTERVAL 5 MINUTE) AND status='started'";
+	$player = current_player($token_);
+
+	$sql = "SELECT count(*) AS c FROM game_status";
 
 	$st = $mysqli->prepare($sql);
-	$r = $st->execute();
+	$st->execute();
+
+	$res = $st->get_result();
+	$r = $res->fetch_all(MYSQLI_ASSOC);
+	if($r[0]['c'] == 0) {
+		if($player == "player_1") {
+			$sql = "INSERT INTO game_status (status, p_turn, result, last_change)
+					VALUES ('aborded', ?, 'player_2', NOW())";
+
+			$st = $mysqli->prepare($sql);
+			$st->bind_param('s', $player);
+			$st->execute();
+		}
+		else {
+			$sql = "INSERT INTO game_status (status, p_turn, result, last_change)
+					VALUES ('aborded', ?, 'player_1', NOW())";
+
+			$st = $mysqli->prepare($sql);
+			$st->bind_param('s', $player);
+			$st->execute();
+		}
+	}
+	else {
+		$sql = "UPDATE game_status SET status='aborded', p_turn=NULL
+				WHERE p_turn IS NOT NULL AND last_change<(NOW()-INTERVAL 5 MINUTE) AND status='started'";
+		
+		$st = $mysqli->prepare($sql);
+		$r = $st->execute();
+	}
 }
 
 function update_game_status() {
@@ -49,7 +78,7 @@ function update_game_status() {
 		$st2->execute();
 
         if($status['status'] == 'started') {
-            $new_status='aborted';
+            $new_status='aborded';
         }
 	}
 

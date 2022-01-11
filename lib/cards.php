@@ -186,7 +186,7 @@ function reset_cards() {
 // 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 // }
 
-// function move_card($x, $y, $token) {
+// function move_card($x, $token) {
 	
 // 	if($token == null || $token == '') {
 // 		header("HTTP/1.1 400 Bad Request");
@@ -214,8 +214,22 @@ function reset_cards() {
 // 		exit;
 // 	}
 
-// 	$sql = "SELECT x, y FROM cards_players
-// 			WHERE ";
+//     if($player == "player_1") {
+//         $sql = "SELECT x, y, player FROM cards_players
+//                 WHERE player='player_2'";
+
+//         $st = $mysqli->prepare($sql);
+//         $st->bind_param('ss', $x, $y);
+//         $st->execute();
+//     }
+//     else {
+//         $sql = "DELETE FROM cards_players
+//                 WHERE player='player_1' AND x=? AND y=?";
+
+//         $st = $mysqli->prepare($sql);
+//         $st->bind_param('ss', $x, $y);
+//         $st->execute();
+//     }
 
 // 	header("HTTP/1.1 400 Bad Request");
 // 	print json_encode(['errormesg'=>"This move is illegal."]);
@@ -223,10 +237,29 @@ function reset_cards() {
 // 	exit;
 // }
 
-function remove_cards($input) {
+function remove_cards($token) {
 	global $mysqli;
 
-	$player = $input['player'];
+	$player = current_player($token);
+
+    // if($player == null ) {
+	// 	header("HTTP/1.1 400 Bad Request");
+	// 	print json_encode(['errormesg'=>"You are not a player of this game."]);
+	// 	exit;
+	// }
+
+	// $status = read_status();
+	// if($status['status'] != 'started') {
+	// 	header("HTTP/1.1 400 Bad Request");
+	// 	print json_encode(['errormesg'=>"Game is not in action."]);
+	// 	exit;
+	// }
+
+	// if($status['p_turn'] != $player) {
+	// 	header("HTTP/1.1 400 Bad Request");
+	// 	print json_encode(['errormesg'=>"It is not your turn."]);
+	// 	exit;
+	// }
 
 	if($player == 'player_1') {
 		$sql = 'SELECT count(x) AS c, y, x FROM cards_players

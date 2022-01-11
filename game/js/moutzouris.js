@@ -78,7 +78,7 @@ function update_info() {
 
 function game_status_update() {
 	clearTimeout(timer);
-	$.ajax({url: "moutzouris.php/status", success: update_status, headers: {"X-Token": me.token} });
+	$.ajax({url: "moutzouris.php/status/", success: update_status, headers: {"X-Token": me.token} });
 }
 
 function update_status(data) {
@@ -122,11 +122,11 @@ function do_remove() {
 // 		return
 // 	}
 
-// 	$.ajax({url: "moutzouris.php/cards/card/" + a[0] + '/' + a[1], 
+// 	$.ajax({url: "moutzouris.php/cards/card/" + a[0], 
 // 			method: 'PUT',
 // 			dataType: "json",
 // 			contentType: 'application/json',
-// 			data: JSON.stringify( {x: a[0], y: a[1]}),
+// 			data: JSON.stringify( {x: a[0]}),
 // 			headers: {"X-Token": me.token},
 // 			success: move_result,
 // 			error: login_error
