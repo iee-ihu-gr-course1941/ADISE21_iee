@@ -117,11 +117,8 @@ function handle_card($method, $x, $y, $input) {
 }
 
 function handle_remove($method, $input) {
-    if($method == 'PUT') {
+    if($method == 'POST') {
         remove_cards($input);
-    }
-    else if($method == 'GET') {
-        
     }
     else {
         header('HTTP/1.1 405 Method Not Allowed');

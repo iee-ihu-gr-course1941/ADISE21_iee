@@ -18,7 +18,7 @@ function card_sharing() {
 function share_cards_by_data(data) {
     for(i=0; i<data.length; i++){
         var o = data[i];
-        if(o.player != 'player_2') {
+        if(o.player == me.player) {
             var img = new Image()
             var card = "images/cards/" + o.x + "_" + o.y + ".png"
             img.src = card
@@ -44,6 +44,8 @@ function share_cards_by_data(data) {
 function login_to_game() {
     var player = $('#menu').val()
 
+    me.player = player
+
     $.ajax({url: './moutzouris.php/players/' + player, 
                 method: 'PUT',
                 dataType: 'json',
@@ -61,9 +63,8 @@ function login_result(data) {
 
     document.getElementById("game").style.display = "none"
     document.getElementById("btn-remove").style.display = "block"
-    //document.getElementById("move_div").style.display = "block"
 
-	//game_status_update();
+	game_status_update();
 }
 
 function login_error(data, y, z, c) {
@@ -71,46 +72,43 @@ function login_error(data, y, z, c) {
 	alert(x.errormesg)
 }
 
-// function update_info() {
-//     $('#game_info').html("I am : " + me.player + ", my name is " + me.username + '<br>Token=' + me.token + '<br>Game state: ' + game_status.status + ', ' + game_status.p_turn + ' must play now.');
-// }
+function update_info() {
+    $('#game_info').html("I am : " + me.player + ", my name is " + me.username + '<br>Token=' + me.token + '<br>Game state: ' + game_status.status + ', ' + game_status.p_turn + ' must play now.');
+}
 
-// function game_status_update() {
-// 	clearTimeout(timer);
-// 	$.ajax({url: "./moutzouris.php/status/", success: update_status, headers: {"X-Token": me.token} });
-// }
+function game_status_update() {
+	clearTimeout(timer);
+	$.ajax({url: "moutzouris.php/status", success: update_status, headers: {"X-Token": me.token} });
+}
 
-// function update_status(data) {
-// 	last_change = new Date().getTime()
+function update_status(data) {
+	last_change = new Date().getTime()
 
-//     var game_stat_old = game_status
-//     var game_status = data[0]
+    var game_status = data[0]
+    var game_stat_old = game_status
 
-//     update_info();
-// 	clearTimeout(timer)
-// 	if(game_status.p_turn == me.player &&  me.player != null) {
-// 		x=0
-// 		// do play
-//         $('#move_div').show(1000)
-// 		timer = setTimeout(function() { game_status_update()}, 15000);
-// 	}
-//     else {
-//         // must wait for something
-//         $('#move_div').hide(1000)
-// 		timer = setTimeout(function() { game_status_update()}, 4000);
-//     }	
-// }
+    update_info();
+	clearTimeout(timer)
+	if(game_status.p_turn == me.player &&  me.player != null) {
+		x=0
+		// do play
+        $('#move_div').show(1000)
+		timer = setTimeout(function() { game_status_update()}, 15000);
+	}
+    else {
+        // must wait for something
+        $('#move_div').hide(1000)
+		timer = setTimeout(function() { game_status_update()}, 4000);
+    }	
+}
 
 function do_remove() {
     var player = $('#menu').val()
 
-    $.ajax({url: "moutzouris.php/cards/remove/", 
-			method: 'PUT',
-			dataType: "json",
-			contentType: 'application/json',
-			headers: {"X-Token": me.token},
-			success: move_result,
-			error: login_error
+    $.ajax({url: "./moutzouris.php/cards/remove", 
+            method: 'POST',
+            data: JSON.stringify({player: player}),
+            success: move_result
         })
 }
 
@@ -136,7 +134,15 @@ function do_remove() {
 // }
 
 function move_result(data){
-	game_status_update()
+    document.getElementById("btn-remove").style.display = "none"
+    document.getElementById("move_div").style.display = "block"
 
+    clean_table()
     share_cards_by_data(data)
+    game_status_update()
+}
+
+function clean_table() {
+    document.getElementById("player_1").innerHTML = ""
+    document.getElementById("player_2").innerHTML = ""
 }
