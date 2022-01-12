@@ -64,7 +64,7 @@ function login_result(data) {
     document.getElementById("game").style.display = "none"
     document.getElementById("btn-remove").style.display = "block"
 
-	game_status_update();
+    game_status_update()
 }
 
 function login_error(data, y, z, c) {
@@ -73,12 +73,12 @@ function login_error(data, y, z, c) {
 }
 
 function update_info() {
-    $('#game_info').html("I am : " + me.player + ", my name is " + me.username + '<br>Token=' + me.token + '<br>Game state: ' + game_status.status + ', ' + game_status.p_turn + ' must play now.');
+    $('#game_info').html("I am : " + me.player + ", my name is " + me.username + "<br>Token=" + me.token + "<br>Game state: " + game_status.status + ", " + game_status.p_turn + " must play now.")
 }
 
 function game_status_update() {
-	clearTimeout(timer);
-	$.ajax({url: "moutzouris.php/status/", success: update_status, headers: {"X-Token": me.token} });
+	clearTimeout(timer)
+	$.ajax({url: "./moutzouris.php/status", success: update_status, headers: {"X-Token": me.token} })
 }
 
 function update_status(data) {
@@ -87,19 +87,18 @@ function update_status(data) {
     var game_status = data[0]
     var game_stat_old = game_status
 
-    update_info();
+    update_info()
 	clearTimeout(timer)
 	if(game_status.p_turn == me.player &&  me.player != null) {
 		x=0
 		// do play
-        $('#move_div').show(1000)
-		timer = setTimeout(function() { game_status_update()}, 15000);
+		$('#move_div').show(1000)
+		timer=setTimeout(function() { game_status_update()}, 15000);
+	} else {
+		// must wait for something
+		$('#move_div').hide(1000)
+		timer=setTimeout(function() { game_status_update()}, 4000);
 	}
-    else {
-        // must wait for something
-        $('#move_div').hide(1000)
-		timer = setTimeout(function() { game_status_update()}, 4000);
-    }	
 }
 
 function do_remove() {
@@ -110,6 +109,7 @@ function do_remove() {
             data: JSON.stringify({player: player}),
             success: move_result
         })
+
 }
 
 // function do_move() {
@@ -139,7 +139,6 @@ function move_result(data){
 
     clean_table()
     share_cards_by_data(data)
-    game_status_update()
 }
 
 function clean_table() {

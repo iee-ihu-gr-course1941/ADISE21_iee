@@ -30,7 +30,7 @@ function check_abort($token_) {
 	if($r[0]['c'] == 0) {
 		if($player == "player_1") {
 			$sql = "INSERT INTO game_status (status, p_turn, result, last_change)
-					VALUES ('aborded', ?, 'player_2', NOW())";
+					VALUES ('initialized', ?, NULL, NOW())";
 
 			$st = $mysqli->prepare($sql);
 			$st->bind_param('s', $player);
@@ -38,7 +38,7 @@ function check_abort($token_) {
 		}
 		else {
 			$sql = "INSERT INTO game_status (status, p_turn, result, last_change)
-					VALUES ('aborded', ?, 'player_1', NOW())";
+					VALUES ('initialized', ?, NULL, NOW())";
 
 			$st = $mysqli->prepare($sql);
 			$st->bind_param('s', $player);
@@ -47,7 +47,7 @@ function check_abort($token_) {
 	}
 	else {
 		$sql = "UPDATE game_status SET status='aborded', p_turn=NULL
-				WHERE p_turn IS NOT NULL AND last_change<(NOW()-INTERVAL 5 MINUTE) AND status='started'";
+				WHERE last_change < (NOW()-INTERVAL 5 MINUTE) AND status='started'";
 		
 		$st = $mysqli->prepare($sql);
 		$r = $st->execute();
@@ -63,16 +63,15 @@ function update_game_status() {
 	$new_status = null;
 	$new_turn = null;
 	
-	$st3 = $mysqli->prepare('SELECT count(*) AS aborded FROM game_status
-                            WHERE last_change < (NOW() - INTERVAL 5 MINUTE)');
-
+	$st3=$mysqli->prepare('SELECT count(*) AS aborded FROM players
+							WHERE last_action < (NOW() - INTERVAL 5 MINUTE)');
+	
 	$st3->execute();
 	$res3 = $st3->get_result();
 	$aborted = $res3->fetch_assoc()['aborded'];
-
 	if($aborted>0) {
 		$sql = "UPDATE players SET username = NULL, token = NULL
-                WHERE last_change < (NOW() - INTERVAL 5 MINUTE)";
+                WHERE last_action < (NOW() - INTERVAL 5 MINUTE)";
 
 		$st2 = $mysqli->prepare($sql);
 		$st2->execute();
@@ -101,6 +100,7 @@ function update_game_status() {
             break;
 		case 2:
                 $new_status = 'started'; 
+
                 if($status['p_turn'] == null) {
                     $new_turn = 'player_1';
                 }
@@ -123,6 +123,7 @@ function read_status() {
 	$st->execute();
 	$res = $st->get_result();
 	$status = $res->fetch_assoc();
+
 	return($status);
 }
 ?>
