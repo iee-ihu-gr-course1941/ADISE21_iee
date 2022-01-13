@@ -28,29 +28,45 @@ function check_abort($token_) {
 	$res = $st->get_result();
 	$r = $res->fetch_all(MYSQLI_ASSOC);
 	if($r[0]['c'] == 0) {
-		if($player == "player_1") {
-			$sql = "INSERT INTO game_status (status, p_turn, result, last_change)
-					VALUES ('initialized', ?, NULL, NOW())";
+		$sql = "INSERT INTO game_status (last_change)
+				VALUES (NOW())";
 
-			$st = $mysqli->prepare($sql);
-			$st->bind_param('s', $player);
-			$st->execute();
-		}
-		else {
-			$sql = "INSERT INTO game_status (status, p_turn, result, last_change)
-					VALUES ('initialized', ?, NULL, NOW())";
-
-			$st = $mysqli->prepare($sql);
-			$st->bind_param('s', $player);
-			$st->execute();
-		}
+		$st = $mysqli->prepare($sql);
+		$st->execute();
 	}
 	else {
-		$sql = "UPDATE game_status SET status='aborded', p_turn=NULL
-				WHERE last_change < (NOW()-INTERVAL 5 MINUTE) AND status='started'";
-		
+		$sql = "SELECT count(*) AS c FROM players
+				WHERE player='player_1'";
+
 		$st = $mysqli->prepare($sql);
-		$r = $st->execute();
+		$st->execute();
+
+		$res = $st->get_result();
+		$r = $res->fetch_all(MYSQLI_ASSOC);
+
+		$sql1 = "SELECT count(*) AS c FROM players
+				WHERE player='player_2'";
+
+		$st1 = $mysqli->prepare($sql1);
+		$st1->execute();
+
+		$res1 = $st1->get_result();
+		$r1 = $res1->fetch_all(MYSQLI_ASSOC);
+
+		if($r[0]['c'] == 1 and $r1[0]['c'] == 0) {
+			$sql = "UPDATE game_status SET status='aborded', p_turn=NULL, result='player_1'
+					WHERE last_change < (NOW()-INTERVAL 5 MINUTE) AND status='started'";
+			
+			$st = $mysqli->prepare($sql);
+			$r = $st->execute();
+		}
+		else if($r[0]['c'] == 0 and $r1[0]['c'] == 1) {
+			$sql = "UPDATE game_status SET status='aborded', p_turn=NULL, result='player_2'
+					WHERE last_change < (NOW()-INTERVAL 5 MINUTE) AND status='started'";
+			
+			$st = $mysqli->prepare($sql);
+			$r = $st->execute();
+		}
 	}
 }
 

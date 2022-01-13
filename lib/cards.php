@@ -186,61 +186,155 @@ function reset_cards() {
 // 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 // }
 
-// function move_card($x, $token) {
+function move_card($x, $token) {
 	
-// 	if($token == null || $token == '') {
-// 		header("HTTP/1.1 400 Bad Request");
-// 		print json_encode(['errormesg'=>"token is not set."]);
-// 		exit;
-// 	}
+	// if($token == null || $token == '') {
+	// 	header("HTTP/1.1 400 Bad Request");
+	// 	print json_encode(['errormesg'=>"token is not set."]);
+	// 	exit;
+	// }
 	
-// 	$player = current_player($token);
-// 	if($player == null ) {
-// 		header("HTTP/1.1 400 Bad Request");
-// 		print json_encode(['errormesg'=>"You are not a player of this game."]);
-// 		exit;
-// 	}
-
-// 	$status = read_status();
-// 	if($status['status'] != 'started') {
-// 		header("HTTP/1.1 400 Bad Request");
-// 		print json_encode(['errormesg'=>"Game is not in action."]);
-// 		exit;
-// 	}
-
-// 	if($status['p_turn'] != $player) {
-// 		header("HTTP/1.1 400 Bad Request");
-// 		print json_encode(['errormesg'=>"It is not your turn."]);
-// 		exit;
-// 	}
-
-//     if($player == "player_1") {
-//         $sql = "SELECT x, y, player FROM cards_players
-//                 WHERE player='player_2'";
-
-//         $st = $mysqli->prepare($sql);
-//         $st->bind_param('ss', $x, $y);
-//         $st->execute();
-//     }
-//     else {
-//         $sql = "DELETE FROM cards_players
-//                 WHERE player='player_1' AND x=? AND y=?";
-
-//         $st = $mysqli->prepare($sql);
-//         $st->bind_param('ss', $x, $y);
-//         $st->execute();
-//     }
-
-// 	header("HTTP/1.1 400 Bad Request");
-// 	print json_encode(['errormesg'=>"This move is illegal."]);
-
-// 	exit;
-// }
-
-function remove_cards($token) {
-	global $mysqli;
-
 	$player = current_player($token);
+	// if($player == null ) {
+	// 	header("HTTP/1.1 400 Bad Request");
+	// 	print json_encode(['errormesg'=>"You are not a player of this game."]);
+	// 	exit;
+	// }
+
+	// $status = read_status();
+	// if($status['status'] != 'started') {
+	// 	header("HTTP/1.1 400 Bad Request");
+	// 	print json_encode(['errormesg'=>"Game is not in action."]);
+	// 	exit;
+	// }
+
+	// if($status['p_turn'] != $player) {
+	// 	header("HTTP/1.1 400 Bad Request");
+	// 	print json_encode(['errormesg'=>"It is not your turn."]);
+	// 	exit;
+	// }
+
+    if($player == "player_1") {
+        $sql = "SELECT x, y FROM cards_players
+                WHERE player='player_2'";
+
+        $result = $mysqli->query($sql);
+
+        if ($result->num_rows > 0) {
+            // output data of each row
+            $i=0;
+            while($row = $result->fetch_assoc()) {
+                if($i == $x) {
+                    $sql = "UPDATE cards_players SET x=?, y=?
+                            WHERE player='player_1'";
+                    
+                    $st = $mysqli->prepare($sql);
+                    $st->bind_param('ss',$row["x"], $row["y"]);
+                    $st->execute();
+                    
+                    $sql1 = 'SELECT count(x) AS c, y, x FROM cards_players
+                            WHERE player="player_2"
+                            GROUP BY x';
+
+                    $result1 = $mysqli->query($sql1);
+
+                    if ($result1->num_rows1 > 0) {
+                        // output data of each row
+                        while($row1 = $result1->fetch_assoc()) {
+                            $sql2 = "SELECT x, y FROM cards_players
+                                    WHERE player='player_2' AND x=?";
+                            
+                            $st2 = $mysqli->prepare($sql2);
+                            $st2->bind_param('s', $row1["x"]);
+                            $st2->execute();
+                            $res2 = $st2->get_result();
+
+                            $j=0;
+                            while($row2 = $res2->fetch_assoc() and $j < 1) {
+                                $sql3 = "DELETE FROM cards_players
+                                        WHERE player='player_1' AND x=? AND y=?";
+                                
+                                $st3 = $mysqli->prepare($sql3);
+                                $st3->bind_param('ss', $row["x"], $row["y"]);
+                                $st3->execute();
+
+                                $j++;
+                            }
+                        }
+                    }
+                    exit;
+                }
+                $i++;
+            }
+        }
+    }
+    else {
+        $sql = "SELECT x, y FROM cards_players
+                WHERE player='player_1'";
+
+        $result = $mysqli->query($sql);
+
+        if ($result->num_rows > 0) {
+            // output data of each row
+            $i=0;
+            while($row = $result->fetch_assoc()) {
+                if($i == $x) {
+                    $sql = "UPDATE cards_players SET x=?, y=?
+                            WHERE player='player_2'";
+                    
+                    $st = $mysqli->prepare($sql);
+                    $st->bind_param('ss',$row["x"], $row["y"]);
+                    $st->execute();
+                    
+                    $sql1 = 'SELECT count(x) AS c, y, x FROM cards_players
+                            WHERE player="player_1"
+                            GROUP BY x';
+
+                    $result1 = $mysqli->query($sql1);
+
+                    if ($result1->num_rows1 > 0) {
+                        // output data of each row
+                        while($row1 = $result1->fetch_assoc()) {
+                            $sql2 = "SELECT x, y FROM cards_players
+                                    WHERE player='player_1' AND x=?";
+                            
+                            $st2 = $mysqli->prepare($sql2);
+                            $st2->bind_param('s', $row1["x"]);
+                            $st2->execute();
+                            $res2 = $st2->get_result();
+
+                            $j=0;
+                            while($row2 = $res2->fetch_assoc() and $j < 1) {
+                                $sql3 = "DELETE FROM cards_players
+                                        WHERE player='player_2' AND x=? AND y=?";
+                                
+                                $st3 = $mysqli->prepare($sql3);
+                                $st3->bind_param('ss', $row["x"], $row["y"]);
+                                $st3->execute();
+
+                                $j++;
+                            }
+                        }
+                    }
+                    exit;
+                }
+                $i++;
+            }
+        }
+    }
+
+    $sql = 'SELECT x, y, player FROM cards_players';
+
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	$res = $st->get_result();
+
+	header('Content-type: application/json');
+	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+}
+
+function remove_cards($player) {
+	global $mysqli;
 
     // if($player == null ) {
 	// 	header("HTTP/1.1 400 Bad Request");

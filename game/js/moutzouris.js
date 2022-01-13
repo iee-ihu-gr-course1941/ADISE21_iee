@@ -78,7 +78,7 @@ function update_info() {
 
 function game_status_update() {
 	clearTimeout(timer)
-	$.ajax({url: "./moutzouris.php/status", success: update_status, headers: {"X-Token": me.token} })
+	$.ajax({url: "moutzouris.php/status", success: update_status, headers: {"X-Token": me.token} })
 }
 
 function update_status(data) {
@@ -89,16 +89,16 @@ function update_status(data) {
 
     update_info()
 	clearTimeout(timer)
-	if(game_status.p_turn == me.player &&  me.player != null) {
-		x=0
-		// do play
-		$('#move_div').show(1000)
-		timer=setTimeout(function() { game_status_update()}, 15000);
-	} else {
-		// must wait for something
-		$('#move_div').hide(1000)
-		timer=setTimeout(function() { game_status_update()}, 4000);
-	}
+	// if(game_status.p_turn == me.player &&  me.player != null) {
+	// 	x=0
+	// 	// do play
+	// 	$('#move_div').show(1000)
+	// 	timer=setTimeout(function() { game_status_update()}, 15000);
+	// } else {
+	// 	// must wait for something
+	// 	$('#move_div').hide(1000)
+	// 	timer=setTimeout(function() { game_status_update()}, 4000);
+	// }
 }
 
 function do_remove() {
@@ -112,26 +112,26 @@ function do_remove() {
 
 }
 
-// function do_move() {
-// 	var s = $('#the_move').val()
+function do_move() {
+	var s = $('#the_move').val()
 	
-// 	var a = s.trim().split(/[ ]+/)
+	var a = s.trim().split(/[ ]+/)
+    
+	if(isNaN(a)) {
+		alert('Must give 1 number')
+		return
+	}
 
-// 	if(a.length != 2) {
-// 		alert('Must give 2 characters')
-// 		return
-// 	}
-
-// 	$.ajax({url: "moutzouris.php/cards/card/" + a[0], 
-// 			method: 'PUT',
-// 			dataType: "json",
-// 			contentType: 'application/json',
-// 			data: JSON.stringify( {x: a[0]}),
-// 			headers: {"X-Token": me.token},
-// 			success: move_result,
-// 			error: login_error
-//         })
-// }
+	$.ajax({url: "moutzouris.php/cards/card/" + a, 
+			method: 'PUT',
+			dataType: "json",
+			contentType: 'application/json',
+			data: JSON.stringify( {x: a}),
+			headers: {"X-Token": me.token},
+			success: move_result,
+			error: login_error
+        })
+}
 
 function move_result(data){
     document.getElementById("btn-remove").style.display = "none"
