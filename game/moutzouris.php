@@ -110,9 +110,9 @@ function handle_user($method) {
 
 function handle_card($method, $input) {
     if($method == 'GET') {
-        show_card($x);
+        show_card($input["x"]);
     } else if ($method == 'PUT') {
-        move_card($input["x"], $input['token']);
+        move_card($input["x"][0], $input['token']);
     }    
 }
 

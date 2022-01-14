@@ -107,7 +107,8 @@ function do_remove() {
     $.ajax({url: "./moutzouris.php/cards/remove", 
             method: 'POST',
             data: JSON.stringify({player: player}),
-            success: move_result
+            success: move_result,
+            error: login_error
         })
 
 }
@@ -122,14 +123,14 @@ function do_move() {
 		return
 	}
 
-	$.ajax({url: "moutzouris.php/cards/card/" + a, 
+	$.ajax({url: "moutzouris.php/cards/card", 
 			method: 'PUT',
 			dataType: "json",
 			contentType: 'application/json',
 			data: JSON.stringify( {x: a}),
 			headers: {"X-Token": me.token},
 			success: move_result,
-			error: login_error
+			//error: login_error
         })
 }
 

@@ -187,6 +187,8 @@ function reset_cards() {
 // }
 
 function move_card($x, $token) {
+
+    global $mysqli;
 	
 	// if($token == null || $token == '') {
 	// 	header("HTTP/1.1 400 Bad Request");
@@ -214,6 +216,23 @@ function move_card($x, $token) {
 	// 	exit;
 	// }
 
+    $sql = 'SELECT count(x) as c, x FROM cards_players
+            WHERE player=?';
+
+	$st = $mysqli->prepare($sql);
+	$st->bind_param('s', $player);
+	$st->execute();
+	$res = $st->get_result();
+
+    if($res->num_rows > 0) {
+        while($row = $res->fetch_assoc()) {
+            if($row['c'] == 1 and $row['x'] == 'K') {
+                print json_encode(['errormesg'=>$player . "Win!"]);
+	         	exit;
+            }
+        }
+    }
+
     if($player == "player_1") {
         $sql = "SELECT x, y FROM cards_players
                 WHERE player='player_2'";
@@ -225,8 +244,8 @@ function move_card($x, $token) {
             $i=0;
             while($row = $result->fetch_assoc()) {
                 if($i == $x) {
-                    $sql = "UPDATE cards_players SET x=?, y=?
-                            WHERE player='player_1'";
+                    $sql = "INSERT IGNORE INTO cards_players (x, y, player)
+                            VALUES (?, ?, 'player_1')";
                     
                     $st = $mysqli->prepare($sql);
                     $st->bind_param('ss',$row["x"], $row["y"]);
@@ -238,65 +257,11 @@ function move_card($x, $token) {
 
                     $result1 = $mysqli->query($sql1);
 
-                    if ($result1->num_rows1 > 0) {
+                    if ($result1->num_rows > 0) {
                         // output data of each row
                         while($row1 = $result1->fetch_assoc()) {
                             $sql2 = "SELECT x, y FROM cards_players
                                     WHERE player='player_2' AND x=?";
-                            
-                            $st2 = $mysqli->prepare($sql2);
-                            $st2->bind_param('s', $row1["x"]);
-                            $st2->execute();
-                            $res2 = $st2->get_result();
-
-                            $j=0;
-                            while($row2 = $res2->fetch_assoc() and $j < 1) {
-                                $sql3 = "DELETE FROM cards_players
-                                        WHERE player='player_1' AND x=? AND y=?";
-                                
-                                $st3 = $mysqli->prepare($sql3);
-                                $st3->bind_param('ss', $row["x"], $row["y"]);
-                                $st3->execute();
-
-                                $j++;
-                            }
-                        }
-                    }
-                    exit;
-                }
-                $i++;
-            }
-        }
-    }
-    else {
-        $sql = "SELECT x, y FROM cards_players
-                WHERE player='player_1'";
-
-        $result = $mysqli->query($sql);
-
-        if ($result->num_rows > 0) {
-            // output data of each row
-            $i=0;
-            while($row = $result->fetch_assoc()) {
-                if($i == $x) {
-                    $sql = "UPDATE cards_players SET x=?, y=?
-                            WHERE player='player_2'";
-                    
-                    $st = $mysqli->prepare($sql);
-                    $st->bind_param('ss',$row["x"], $row["y"]);
-                    $st->execute();
-                    
-                    $sql1 = 'SELECT count(x) AS c, y, x FROM cards_players
-                            WHERE player="player_1"
-                            GROUP BY x';
-
-                    $result1 = $mysqli->query($sql1);
-
-                    if ($result1->num_rows1 > 0) {
-                        // output data of each row
-                        while($row1 = $result1->fetch_assoc()) {
-                            $sql2 = "SELECT x, y FROM cards_players
-                                    WHERE player='player_1' AND x=?";
                             
                             $st2 = $mysqli->prepare($sql2);
                             $st2->bind_param('s', $row1["x"]);
@@ -316,7 +281,61 @@ function move_card($x, $token) {
                             }
                         }
                     }
-                    exit;
+                    break;
+                }
+                $i++;
+            }
+        }
+    }
+    else {
+        $sql = "SELECT x, y FROM cards_players
+        WHERE player='player_1'";
+
+        $result = $mysqli->query($sql);
+
+        if ($result->num_rows > 0) {
+            // output data of each row
+            $i=0;
+            while($row = $result->fetch_assoc()) {
+                if($i == $x) {
+                    $sql = "INSERT IGNORE INTO cards_players (x, y, player)
+                            VALUES (?, ?, 'player_2')";
+                    
+                    $st = $mysqli->prepare($sql);
+                    $st->bind_param('ss',$row["x"], $row["y"]);
+                    $st->execute();
+                    
+                    $sql1 = 'SELECT count(x) AS c, y, x FROM cards_players
+                            WHERE player="player_1"
+                            GROUP BY x';
+
+                    $result1 = $mysqli->query($sql1);
+
+                    if ($result1->num_rows > 0) {
+                        // output data of each row
+                        while($row1 = $result1->fetch_assoc()) {
+                            $sql2 = "SELECT x, y FROM cards_players
+                                    WHERE player='player_1' AND x=?";
+                            
+                            $st2 = $mysqli->prepare($sql2);
+                            $st2->bind_param('s', $row1["x"]);
+                            $st2->execute();
+                            $res2 = $st2->get_result();
+
+                            $j=0;
+                            while($row2 = $res2->fetch_assoc() and $j < 1) {
+                                $sql3 = "DELETE FROM cards_players
+                                        WHERE player='player_1' AND x=? AND y=?";
+                                
+                                $st3 = $mysqli->prepare($sql3);
+                                $st3->bind_param('ss', $row["x"], $row["y"]);
+                                $st3->execute();
+
+                                $j++;
+                            }
+                        }
+                    }
+                    break;
                 }
                 $i++;
             }
