@@ -64,6 +64,7 @@ function login_result(data) {
     document.getElementById("game").style.display = "none"
     document.getElementById("btn-remove").style.display = "block"
 
+    update_info()
     game_status_update()
 }
 
@@ -82,23 +83,25 @@ function game_status_update() {
 }
 
 function update_status(data) {
-	last_change = new Date().getTime()
+	last_update=new Date().getTime()
 
-    var game_status = data[0]
-    var game_stat_old = game_status
+	var game_stat_old = game_status
+	game_status=data[0]
 
-    update_info()
+	update_info()
 	clearTimeout(timer)
-	// if(game_status.p_turn == me.player &&  me.player != null) {
-	// 	x=0
-	// 	// do play
-	// 	$('#move_div').show(1000)
-	// 	timer=setTimeout(function() { game_status_update()}, 15000);
-	// } else {
-	// 	// must wait for something
-	// 	$('#move_div').hide(1000)
-	// 	timer=setTimeout(function() { game_status_update()}, 4000);
-	// }
+	if(game_status.p_turn == me.player &&  me.player != null) {
+		x=0;
+		// do play
+
+		$('#move_div').show(1000)
+		timer = setTimeout(function() { game_status_update()}, 15000)
+	} else {
+		// must wait for something
+
+		$('#move_div').hide(1000)
+		timer = setTimeout(function() { game_status_update()}, 4000)
+	}
 }
 
 function do_remove() {
@@ -130,7 +133,7 @@ function do_move() {
 			data: JSON.stringify( {x: a}),
 			headers: {"X-Token": me.token},
 			success: move_result,
-			//error: login_error
+			error: login_error
         })
 }
 
