@@ -12,6 +12,7 @@ if(gethostname() == 'users.iee.ihu.gr') {
 	$mysqli = new mysqli($host, $user, $pass, $db, null, '/home/student/it/2018/it185157/mysql/run/mysql.sock');
 }
 else {
+    $pass = "Adise21_iee";
     $mysqli = new mysqli($host, $user, $pass, $db);
 }
 
