@@ -133,8 +133,6 @@ function update_status(data) {
         clean_table()
         card_sharing()
 
-        check_for_win()
-
         if(flag == false) {
             $('#btn-remove').show(1000)
 
@@ -156,6 +154,8 @@ function update_status(data) {
 
         clean_table()
         card_sharing()
+
+        check_for_win()
 
 		$('#move_div').hide(1000)
 		timer = setTimeout(function() { game_status_update()}, 4000)

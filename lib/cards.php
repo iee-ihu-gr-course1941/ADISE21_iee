@@ -271,21 +271,37 @@ function check_for_win($token) {
         }
     }
 
-    if(check_remove_cards($player) == 0) {
-        $sql = "DELETE FROM cards_players
-                WHERE player=?";
-        
-        $st = $mysqli->prepare($sql);
-        $st->bind_param('s', $player);
-        $st->execute();
+    if($player == "player_1") {
+        if(check_remove_cards('player_2') == 0) {
+            $sql = "DELETE FROM cards_players
+                    WHERE player='player_2'";
+            
+            $st = $mysqli->prepare($sql);
+            $st->execute();
 
-        $sql = 'UPDATE game_status SET result=?';
+            $sql = 'UPDATE game_status SET result="player_2"';
 
-        $st = $mysqli->prepare($sql);
-        $st->bind_param('s', $player);
-        $st->execute();
-        
-        exit;
+            $st = $mysqli->prepare($sql);
+            $st->execute();
+            
+            exit;
+        }
+    }
+    else {
+        if(check_remove_cards('player_1') == 0) {
+            $sql = "DELETE FROM cards_players
+                    WHERE player='player_1'";
+            
+            $st = $mysqli->prepare($sql);
+            $st->execute();
+
+            $sql = 'UPDATE game_status SET result="player_1"';
+
+            $st = $mysqli->prepare($sql);
+            $st->execute();
+            
+            exit;
+        }
     }
 }
 
