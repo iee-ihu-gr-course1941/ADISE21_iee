@@ -88,35 +88,6 @@ function move_card($x, $token) {
 	
     $player = current_player($token);
 
-    $sql = 'SELECT count(x) as c, x FROM cards_players
-            WHERE player=?';
-
-	$st = $mysqli->prepare($sql);
-	$st->bind_param('s', $player);
-	$st->execute();
-	$res = $st->get_result();
-    
-    if($player == 'player_1') {
-        if($res->num_rows > 0) {
-            while($row = $res->fetch_assoc()) {
-                if($row['c'] == 1 and $row['x'] == 'K') {
-                    print json_encode(['errormesg'=>'player_2' . "Win!"]);
-                    exit;
-                }
-            }
-        }
-    }
-    else {
-        if($res->num_rows > 0) {
-            while($row = $res->fetch_assoc()) {
-                if($row['c'] == 1 and $row['x'] == 'K') {
-                    print json_encode(['errormesg'=>'player_1' . "Win!"]);
-                    exit;
-                }
-            }
-        }
-    }
-
     if($player == "player_1") {
         $sql = "SELECT x, y FROM cards_players
                 WHERE player='player_2'";
@@ -249,6 +220,43 @@ function move_card($x, $token) {
 	 	exit;
     }
 
+    $sql = 'SELECT count(x) as c, x FROM cards_players
+            WHERE player=?';
+
+	$st = $mysqli->prepare($sql);
+	$st->bind_param('s', $player);
+	$st->execute();
+	$res = $st->get_result();
+    
+    if($player == 'player_1') {
+        if($res->num_rows > 0) {
+            while($row = $res->fetch_assoc()) {
+                if($row['c'] == 1 and $row['x'] == 'K') {
+                    print json_encode(['errormesg'=>'player_2' . "Win!"]);
+                    exit;
+                }
+            }
+        }
+        else if($res->num_rows == 0) {
+            print json_encode(['errormesg'=>'player_1' . "Win!"]);
+                exit;
+        }
+    }
+    else {
+        if($res->num_rows > 0) {
+            while($row = $res->fetch_assoc()) {
+                if($row['c'] == 1 and $row['x'] == 'K') {
+                    print json_encode(['errormesg'=>'player_1' . "Win!"]);
+                    exit;
+                }
+            }
+        }
+        else if($res->num_rows == 0) {
+            print json_encode(['errormesg'=>'player_2' . "Win!"]);
+                exit;
+        }
+    }
+
     $sql = 'SELECT x, y, player FROM cards_players';
 
 	$st = $mysqli->prepare($sql);
@@ -357,7 +365,7 @@ function remove_card($player, $x, $y) {
         if ($result->num_rows > 0) {
             // output data of each row
             while($row = $result->fetch_assoc()) {
-                if($row["c"] > 1) {
+                if($row["c"] >= 1) {
                     $sql = "SELECT x, y FROM cards_players
                             WHERE player='player_1' AND x=?";
                     
@@ -383,7 +391,7 @@ function remove_card($player, $x, $y) {
 	}
     else {
         $sql = 'SELECT count(x) AS c FROM cards_players
-                WHERE player="player_1" AND x=?
+                WHERE player="player_2" AND x=?
                 GROUP BY x';
 
         $st = $mysqli->prepare($sql);
@@ -394,7 +402,7 @@ function remove_card($player, $x, $y) {
         if ($result->num_rows > 0) {
             // output data of each row
             while($row = $result->fetch_assoc()) {
-                if($row["c"] > 1) {
+                if($row["c"] >= 1) {
                     $sql = "SELECT x, y FROM cards_players
                             WHERE player='player_2' AND x=?";
                     
