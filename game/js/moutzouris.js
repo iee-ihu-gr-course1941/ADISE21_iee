@@ -133,6 +133,8 @@ function update_status(data) {
         clean_table()
         card_sharing()
 
+        check_for_win()
+
         if(flag == false) {
             $('#btn-remove').show(1000)
 
