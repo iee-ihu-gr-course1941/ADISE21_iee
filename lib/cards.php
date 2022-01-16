@@ -263,8 +263,6 @@ function move_card($x, $token) {
 
 function remove_cards($player) {
 	global $mysqli;
-    
-    update_game_status();
 
 	if($player == 'player_1') {
 		$sql = 'SELECT count(x) AS c, y, x FROM cards_players
