@@ -55,6 +55,9 @@ switch($r = array_shift($request)) {
     case 'p_turn':
             handle_p_turn($method);
         break;
+    case 'check':
+            handle_check($input);
+        break;
     case 'users':
             handle_user($method);
         break;
@@ -141,5 +144,9 @@ function handle_p_turn($method) {
     if($method == 'PUT') {
         change_p_turn();
     }
+}
+
+function handle_check($input) {
+    check_for_win($input['player']);
 }
 ?>

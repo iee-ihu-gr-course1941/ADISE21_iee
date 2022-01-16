@@ -199,6 +199,57 @@ function move_card($x, $token) {
 
     remove_card($player, $row["x"], $row["y"]);
 
+    $sql = 'SELECT x, y, player FROM cards_players';
+
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	$res = $st->get_result();
+
+	header('Content-type: application/json');
+	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+}
+
+function check_for_win($player) {
+    global $mysqli;
+
+    $sql = 'SELECT count(x) as c, x FROM cards_players
+            WHERE player=?';
+
+	$st = $mysqli->prepare($sql);
+	$st->bind_param('s', $player);
+	$st->execute();
+	$res = $st->get_result();
+    
+    if($player == 'player_1') {
+        if($res->num_rows > 0) {
+            while($row = $res->fetch_assoc()) {
+                if($row['c'] == 1 and $row['x'] == 'K') {
+                    echo "hello";
+                    print json_encode(['errormesg'=>'player_2' . "Win!"]);
+                    exit;
+                }
+            }
+        }
+        else {
+            print json_encode(['errormesg'=>'player_1' . "Win!"]);
+                exit;
+        }
+    }
+    else {
+        if($res->num_rows > 0) {
+            while($row = $res->fetch_assoc()) {
+                if($row['c'] == 1 and $row['x'] == 'K') {
+                    print json_encode(['errormesg'=>'player_1' . "Win!"]);
+                    exit;
+                }
+            }
+        }
+        else {
+            print json_encode(['errormesg'=>'player_2' . "Win!"]);
+                exit;
+        }
+    }
+
     if(check_remove_cards($player) == 0) {
         $sql = "DELETE FROM cards_players
                 WHERE player=?";
@@ -219,52 +270,6 @@ function move_card($x, $token) {
         print json_encode(['errormesg'=>$player . "Win!"]);
 	 	exit;
     }
-
-    $sql = 'SELECT count(x) as c, x FROM cards_players
-            WHERE player=?';
-
-	$st = $mysqli->prepare($sql);
-	$st->bind_param('s', $player);
-	$st->execute();
-	$res = $st->get_result();
-    
-    if($player == 'player_1') {
-        if($res->num_rows > 0) {
-            while($row = $res->fetch_assoc()) {
-                if($row['c'] == 1 and $row['x'] == 'K') {
-                    print json_encode(['errormesg'=>'player_2' . "Win!"]);
-                    exit;
-                }
-            }
-        }
-        else if($res->num_rows == 0) {
-            print json_encode(['errormesg'=>'player_1' . "Win!"]);
-                exit;
-        }
-    }
-    else {
-        if($res->num_rows > 0) {
-            while($row = $res->fetch_assoc()) {
-                if($row['c'] == 1 and $row['x'] == 'K') {
-                    print json_encode(['errormesg'=>'player_1' . "Win!"]);
-                    exit;
-                }
-            }
-        }
-        else if($res->num_rows == 0) {
-            print json_encode(['errormesg'=>'player_2' . "Win!"]);
-                exit;
-        }
-    }
-
-    $sql = 'SELECT x, y, player FROM cards_players';
-
-	$st = $mysqli->prepare($sql);
-	$st->execute();
-	$res = $st->get_result();
-
-	header('Content-type: application/json');
-	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
 
 function remove_cards($player) {

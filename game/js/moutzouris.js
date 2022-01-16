@@ -99,6 +99,10 @@ function change_p_turn() {
     $.ajax({url: "moutzouris.php/p_turn", method:'PUT', headers: {"X-Token": me.token} })
 }
 
+function check_for_win() {
+    $.ajax({url: "moutzouris.php/check", error: login_error, headers: {"X-Token": me.token} })
+}
+
 function update_status(data) {
 	last_update=new Date().getTime()
 
@@ -190,6 +194,7 @@ function move_result(data){
     share_cards_by_data(data)
 
     change_p_turn()
+    check_for_win()
 
     update_info()
     game_status_update()
