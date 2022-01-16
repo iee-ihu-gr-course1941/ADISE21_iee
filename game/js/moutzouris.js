@@ -2,6 +2,7 @@ var me = {token:null, player:null}
 var game_status = {}
 var last_change = new Date().getTime()
 var timer = null
+var flag = false
 
 $(function() {
     card_reset()
@@ -120,15 +121,28 @@ function update_status(data) {
 
 	if(game_status.p_turn == me.player &&  me.player != null) {
 		// do play
-        
+
         clean_table()
         card_sharing()
 
-        $('#move_div').show(1000)
-        timer = setTimeout(function() { game_status_update()}, 4000)
+        if(flag == false) {
+            $('#btn-remove').show(1000)
+
+            flag = true
+
+            return 0
+        }
+        else {
+            $('#move_div').show(1000)
+            timer = setTimeout(function() { game_status_update()}, 4000)
+        }
 	}
     else {
 		// must wait for something
+
+        if(flag == true) {
+            $('#btn-remove').hide(1000)
+        }
 
         clean_table()
         card_sharing()
@@ -166,7 +180,8 @@ function do_move() {
 			contentType: 'application/json',
 			data: JSON.stringify( {x: a}),
 			headers: {"X-Token": me.token},
-			success: move_result
+			success: move_result,
+            error: login_error
         })
 }
 
