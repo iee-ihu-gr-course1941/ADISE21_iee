@@ -194,7 +194,6 @@ function move_result(data){
     share_cards_by_data(data)
 
     change_p_turn()
-    check_for_win()
 
     update_info()
     game_status_update()
