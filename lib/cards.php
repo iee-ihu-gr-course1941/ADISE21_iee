@@ -224,13 +224,21 @@ function check_for_win($token) {
         if($res->num_rows > 0) {
             while($row = $res->fetch_assoc()) {
                 if($row['c'] == 1 and $row['x'] == 'K') {
-                    print json_encode(['errormesg'=>'player_1' . " Win!"]);
+                    $sql = 'UPDATE game_status SET result="player_1"';
+
+                    $st = $mysqli->prepare($sql);
+                    $st->execute();
+
                     exit;
                 }
             }
         }
         else {
-            print json_encode(['errormesg'=>'player_2' . " Win!"]);
+            $sql = 'UPDATE game_status SET result="player_2"';
+
+            $st = $mysqli->prepare($sql);
+            $st->execute();
+            
             exit;
         }
     }
@@ -244,13 +252,21 @@ function check_for_win($token) {
         if($res->num_rows > 0) {
             while($row = $res->fetch_assoc()) {
                 if($row['c'] == 1 and $row['x'] == 'K') {
-                    print json_encode(['errormesg'=>'player_2' . " Win!"]);
+                    $sql = 'UPDATE game_status SET result="player_2"';
+
+                    $st = $mysqli->prepare($sql);
+                    $st->execute();
+                    
                     exit;
                 }
             }
         }
         else {
-            print json_encode(['errormesg'=>'player_1' . " Win!"]);
+            $sql = 'UPDATE game_status SET result="player_1"';
+
+            $st = $mysqli->prepare($sql);
+            $st->execute();
+            
             exit;
         }
     }
@@ -263,13 +279,13 @@ function check_for_win($token) {
         $st->bind_param('s', $player);
         $st->execute();
 
-        $sql = 'SELECT x, y, player FROM cards_players';
+        $sql = 'UPDATE game_status SET result=?';
 
         $st = $mysqli->prepare($sql);
+        $st->bind_param('s', $player);
         $st->execute();
-
-        echo "<script>alert('$player Win!)</script>";
-	 	exit;
+        
+        exit;
     }
 }
 

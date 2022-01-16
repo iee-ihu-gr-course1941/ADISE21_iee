@@ -116,11 +116,15 @@ function update_status(data) {
         alert("player_1 Win!")
 
         game_status_reset()
+
+        return 0
     }
     else if(game_status.result == "player_2") {
         alert("player_2 Win!")
 
         game_status_reset()
+
+        return 0
     }
 
 	if(game_status.p_turn == me.player &&  me.player != null) {
@@ -152,8 +156,6 @@ function update_status(data) {
 
         clean_table()
         card_sharing()
-
-        check_for_win()
 
 		$('#move_div').hide(1000)
 		timer = setTimeout(function() { game_status_update()}, 4000)
