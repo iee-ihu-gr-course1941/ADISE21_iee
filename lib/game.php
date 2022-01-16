@@ -72,10 +72,9 @@ function check_abort($token_) {
 
 function update_game_status() {
 	global $mysqli;
-	
+
 	$status = read_status();
-	
-	
+
 	$new_status = null;
 	$new_turn = null;
 	
@@ -120,6 +119,12 @@ function update_game_status() {
                 if($status['p_turn'] == null) {
                     $new_turn = 'player_1';
                 }
+				else if($status['p_turn'] == 'player_1') {
+					$new_turn = 'player_2';
+				}
+				else if($status['p_turn'] == 'player_2') {
+					$new_turn = 'player_1';
+				}
 			break;
 	}
 

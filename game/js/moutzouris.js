@@ -118,10 +118,12 @@ function update_status(data) {
 		// do play
         x=0
         $('#move_div').show(1000)
-        timer = setTimeout(function() { game_status_update()}, 15000)
-	} else {
+        timer = setTimeout(function() { game_status_update()}, 4000)
+	}
+    else {
 		// must wait for something
-
+        clean_table()
+        card_sharing()
 		$('#move_div').hide(1000)
 		timer = setTimeout(function() { game_status_update()}, 4000)
 	}
@@ -155,8 +157,7 @@ function do_move() {
 			contentType: 'application/json',
 			data: JSON.stringify( {x: a}),
 			headers: {"X-Token": me.token},
-			success: move_result,
-			error: login_error
+			success: move_result
         })
 }
 
@@ -177,4 +178,5 @@ function reset_game(data) {
     clean_table()
 
     document.getElementById("game").style.display = "flex"
+    update_info()
 }

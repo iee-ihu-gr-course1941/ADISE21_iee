@@ -86,31 +86,7 @@ function move_card($x, $token) {
 
     global $mysqli;
 	
-	if($token == null || $token == '') {
-		header("HTTP/1.1 400 Bad Request");
-		print json_encode(['errormesg'=>"token is not set."]);
-		exit;
-	}
-	
-	$player = current_player($token);
-	if($player == null ) {
-		header("HTTP/1.1 400 Bad Request");
-		print json_encode(['errormesg'=>"You are not a player of this game."]);
-		exit;
-	}
-
-	// $status = read_status();
-	// if($status['status'] != 'started') {
-	// 	header("HTTP/1.1 400 Bad Request");
-	// 	print json_encode(['errormesg'=>"Game is not in action."]);
-	// 	exit;
-	// }
-
-	// if($status['p_turn'] != $player) {
-	// 	header("HTTP/1.1 400 Bad Request");
-	// 	print json_encode(['errormesg'=>"It is not your turn."]);
-	// 	exit;
-	// }
+    $player = current_player($token);
 
     $sql = 'SELECT count(x) as c, x FROM cards_players
             WHERE player=?';
@@ -248,6 +224,8 @@ function move_card($x, $token) {
                 $i++;
             }
         }
+
+        update_game_status();
     }
 
     remove_card($player, $row["x"], $row["y"]);
@@ -285,25 +263,8 @@ function move_card($x, $token) {
 
 function remove_cards($player) {
 	global $mysqli;
-
-    if($player == null ) {
-		header("HTTP/1.1 400 Bad Request");
-		print json_encode(['errormesg'=>"You are not a player of this game."]);
-		exit;
-	}
-
-	// $status = read_status();
-	// if($status['status'] != 'started') {
-	// 	header("HTTP/1.1 400 Bad Request");
-	// 	print json_encode(['errormesg'=>"Game is not in action."]);
-	// 	exit;
-	// }
-
-	// if($status['p_turn'] != $player) {
-	// 	header("HTTP/1.1 400 Bad Request");
-	// 	print json_encode(['errormesg'=>"It is not your turn."]);
-	// 	exit;
-	// }
+    
+    update_game_status();
 
 	if($player == 'player_1') {
 		$sql = 'SELECT count(x) AS c, y, x FROM cards_players
@@ -387,12 +348,6 @@ function remove_cards($player) {
 function remove_card($player, $x, $y) {
     global $mysqli;
 
-    if($player == null ) {
-		header("HTTP/1.1 400 Bad Request");
-		print json_encode(['errormesg'=>"You are not a player of this game."]);
-		exit;
-	}
-
 	if($player == 'player_1') {
 		$sql = 'SELECT count(x) AS c FROM cards_players
                 WHERE player="player_1" AND x=?
@@ -471,12 +426,6 @@ function remove_card($player, $x, $y) {
 
 function check_remove_cards($player) {
     global $mysqli;
-
-    if($player == null ) {
-		header("HTTP/1.1 400 Bad Request");
-		print json_encode(['errormesg'=>"You are not a player of this game."]);
-		exit;
-	}
 
     $sql = "CREATE TABLE copy_cards_players AS 
             SELECT * FROM cards_players";
