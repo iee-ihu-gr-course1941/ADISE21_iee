@@ -4,6 +4,7 @@ var last_change = new Date().getTime()
 var timer = null
 
 $(function() {
+    card_reset()
     var input = document.getElementById("username")
     var text = document.getElementById("paragraph").innerHTML
     var result = text.trim()
@@ -11,8 +12,16 @@ $(function() {
     input.value = result
 })
 
+$(window).on('load', function(){
+    game_status_reset()
+})
+
+function card_reset() {
+    $.ajax({url: "./moutzouris.php/cards", method: "POST", headers: {'X-Token': me.token}});
+}
+
 function card_sharing() {
-    $.ajax({url: "./moutzouris.php/cards", method: "POST", headers: {'X-Token': me.token}, success: share_cards_by_data});
+    $.ajax({url: "./moutzouris.php/cards", method: "GET", headers: {'X-Token': me.token}, success: share_cards_by_data});
 }
 
 function share_cards_by_data(data) {
@@ -62,7 +71,6 @@ function login_result(data) {
     card_sharing()
 
     document.getElementById("game").style.display = "none"
-    document.getElementById("btn-remove").style.display = "block"
 
     update_info()
     game_status_update()
@@ -82,6 +90,10 @@ function game_status_update() {
 	$.ajax({url: "moutzouris.php/status", success: update_status, headers: {"X-Token": me.token} })
 }
 
+function game_status_reset() {
+    $.ajax({url: "moutzouris.php/reset", method:'PUT', success: reset_game, headers: {"X-Token": me.token} })
+}
+
 function update_status(data) {
 	last_update=new Date().getTime()
 
@@ -90,12 +102,23 @@ function update_status(data) {
 
 	update_info()
 	clearTimeout(timer)
-	if(game_status.p_turn == me.player &&  me.player != null) {
-		x=0;
-		// do play
 
-		$('#move_div').show(1000)
-		timer = setTimeout(function() { game_status_update()}, 15000)
+    if(game_status.result == "player_1") {
+        alert("player_1 Win!")
+
+        game_status_reset()
+    }
+    else if(game_status.result == "player_2") {
+        alert("player_2 Win!")
+
+        game_status_reset()
+    }
+
+	if(game_status.p_turn == me.player &&  me.player != null) {
+		// do play
+        x=0
+        $('#move_div').show(1000)
+        timer = setTimeout(function() { game_status_update()}, 15000)
 	} else {
 		// must wait for something
 
@@ -138,14 +161,20 @@ function do_move() {
 }
 
 function move_result(data){
-    document.getElementById("btn-remove").style.display = "none"
-    document.getElementById("move_div").style.display = "block"
-
     clean_table()
     share_cards_by_data(data)
+
+    update_info()
+    game_status_update()
 }
 
 function clean_table() {
     document.getElementById("player_1").innerHTML = ""
     document.getElementById("player_2").innerHTML = ""
+}
+
+function reset_game(data) {
+    clean_table()
+
+    document.getElementById("game").style.display = "flex"
 }

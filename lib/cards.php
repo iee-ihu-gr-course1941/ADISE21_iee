@@ -1,5 +1,18 @@
 <?php
 
+function read_cards() {
+    global $mysqli;
+    
+    $sql = 'SELECT x, y, player FROM cards_players';
+
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	$res = $st->get_result();
+
+	header('Content-type: application/json');
+	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
+}
+
 function reset_cards() {
     global $mysqli;
 
@@ -67,15 +80,6 @@ function reset_cards() {
             unset($cards[$key]);
         }
     }
-
-	$sql = 'SELECT x, y, player FROM cards_players';
-
-	$st = $mysqli->prepare($sql);
-	$st->execute();
-	$res = $st->get_result();
-
-	header('Content-type: application/json');
-	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
 
 function move_card($x, $token) {
@@ -474,15 +478,14 @@ function check_remove_cards($player) {
 		exit;
 	}
 
-    $sql = "SELECT x, y, num, players 
-            INTO #tmp_cards_players
-            FROM cards_players";
+    $sql = "CREATE TABLE copy_cards_players AS 
+            SELECT * FROM cards_players";
 
     $st = $mysqli -> prepare($sql);
     $st -> execute();
 
 	if($player == 'player_1') {
-		$sql = 'SELECT count(x) AS c, y, x FROM #tmp_cards_players
+		$sql = 'SELECT count(x) AS c, y, x FROM copy_cards_players
                 WHERE player="player_1"
                 GROUP BY x';
 
@@ -492,7 +495,7 @@ function check_remove_cards($player) {
             // output data of each row
             while($row = $result->fetch_assoc()) {
                 if($row["c"] > 1) {
-                    $sql = "SELECT x, y FROM #tmp_cards_players
+                    $sql = "SELECT x, y FROM copy_cards_players
                             WHERE player='player_1' AND x=?";
                     
                     $st = $mysqli->prepare($sql);
@@ -502,7 +505,7 @@ function check_remove_cards($player) {
 
                     $i=0;
                     while($row_ = $res->fetch_assoc() and $i < 2) {
-                        $sql = "DELETE FROM #tmp_cards_players
+                        $sql = "DELETE FROM copy_cards_players
                                 WHERE player='player_1' AND x=? AND y=?";
                         
                         $st_ = $mysqli->prepare($sql);
@@ -516,7 +519,7 @@ function check_remove_cards($player) {
         }
 	}
     else {
-        $sql = 'SELECT count(x) AS c, y, x FROM #tmp_cards_players
+        $sql = 'SELECT count(x) AS c, y, x FROM copy_cards_players
                 WHERE player="player_2"
                 GROUP BY x';
 
@@ -526,7 +529,7 @@ function check_remove_cards($player) {
             // output data of each row
             while($row = $result->fetch_assoc()) {
                 if($row["c"] > 1) {
-                    $sql = "SELECT x, y FROM #tmp_cards_players
+                    $sql = "SELECT x, y FROM copy_cards_players
                             WHERE player='player_2' AND x=?";
                     
                     $st = $mysqli->prepare($sql);
@@ -536,7 +539,7 @@ function check_remove_cards($player) {
 
                     $i=0;
                     while($row_ = $res->fetch_assoc() and $i < 2) {
-                        $sql = "DELETE FROM #tmp_cards_players
+                        $sql = "DELETE FROM copy_cards_players
                                 WHERE player='player_2' AND x=? AND y=?";
                         
                         $st_ = $mysqli->prepare($sql);
@@ -550,7 +553,7 @@ function check_remove_cards($player) {
         }
     }
 
-    $sql = 'SELECT COUNT(x) AS c FROM #tmp_cards_players
+    $sql = 'SELECT COUNT(x) AS c FROM copy_cards_players
             WHERE player=?';
 
     $st_ = $mysqli->prepare($sql);
@@ -562,9 +565,19 @@ function check_remove_cards($player) {
         // output data of each row
         while($row = $result->fetch_assoc()) {
             if($row["c"] == 0) {
+                $sql = "DROP TABLE copy_cards_players";
+
+                $st = $mysqli -> prepare($sql);
+                $st -> execute();
+
                 return 0;
             }
             else {
+                $sql = "DROP TABLE copy_cards_players";
+
+                $st = $mysqli -> prepare($sql);
+                $st -> execute();
+                
                 return 1;
             }
         }

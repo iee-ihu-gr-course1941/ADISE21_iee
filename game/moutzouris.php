@@ -49,6 +49,9 @@ switch($r = array_shift($request)) {
                 header("HTTP/1.1 404 Not Found");
             }
         break;
+    case 'reset':
+            handle_reset($method);
+        break;
     case 'users':
             handle_user($method);
         break;
@@ -99,6 +102,12 @@ function handle_status($method, $input) {
     }
     else {
         header('HTTP/1.1 405 Method Not Allowed');
+    }
+}
+
+function handle_reset($method) {
+    if($method == 'PUT') {
+        reset_status();
     }
 }
 

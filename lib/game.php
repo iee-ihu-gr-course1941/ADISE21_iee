@@ -55,14 +55,14 @@ function check_abort($token_) {
 
 		if($r[0]['c'] == 1 and $r1[0]['c'] == 0) {
 			$sql = "UPDATE game_status SET status='aborded', p_turn=NULL, result='player_1'
-					WHERE last_change < (NOW()-INTERVAL 5 MINUTE) AND status='started'";
+					WHERE status='started'";
 			
 			$st = $mysqli->prepare($sql);
 			$r = $st->execute();
 		}
 		else if($r[0]['c'] == 0 and $r1[0]['c'] == 1) {
 			$sql = "UPDATE game_status SET status='aborded', p_turn=NULL, result='player_2'
-					WHERE last_change < (NOW()-INTERVAL 5 MINUTE) AND status='started'";
+					WHERE status='started'";
 			
 			$st = $mysqli->prepare($sql);
 			$r = $st->execute();
@@ -142,4 +142,21 @@ function read_status() {
 
 	return($status);
 }
+
+function reset_status() {
+	global $mysqli;
+
+	$sql = "DELETE FROM game_status
+			WHERE result='player_1' OR result = 'player_2' OR p_turn = 'player_1' OR p_turn = 'player_2'";
+
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+
+	$sql = 'DELETE FROM players
+			WHERE player="player_1" OR player="player_2"';
+
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+}
+
 ?>
