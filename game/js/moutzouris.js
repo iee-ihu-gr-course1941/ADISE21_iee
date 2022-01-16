@@ -94,6 +94,10 @@ function game_status_reset() {
     $.ajax({url: "moutzouris.php/reset", method:'PUT', success: reset_game, headers: {"X-Token": me.token} })
 }
 
+function change_p_turn() {
+    $.ajax({url: "moutzouris.php/p_turn", method:'PUT', headers: {"X-Token": me.token} })
+}
+
 function update_status(data) {
 	last_update=new Date().getTime()
 
@@ -116,14 +120,19 @@ function update_status(data) {
 
 	if(game_status.p_turn == me.player &&  me.player != null) {
 		// do play
-        x=0
+        
+        clean_table()
+        card_sharing()
+
         $('#move_div').show(1000)
         timer = setTimeout(function() { game_status_update()}, 4000)
 	}
     else {
 		// must wait for something
+
         clean_table()
         card_sharing()
+
 		$('#move_div').hide(1000)
 		timer = setTimeout(function() { game_status_update()}, 4000)
 	}
@@ -164,6 +173,8 @@ function do_move() {
 function move_result(data){
     clean_table()
     share_cards_by_data(data)
+
+    change_p_turn()
 
     update_info()
     game_status_update()

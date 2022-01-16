@@ -224,8 +224,6 @@ function move_card($x, $token) {
                 $i++;
             }
         }
-
-        update_game_status();
     }
 
     remove_card($player, $row["x"], $row["y"]);

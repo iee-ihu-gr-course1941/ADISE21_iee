@@ -119,12 +119,6 @@ function update_game_status() {
                 if($status['p_turn'] == null) {
                     $new_turn = 'player_1';
                 }
-				else if($status['p_turn'] == 'player_1') {
-					$new_turn = 'player_2';
-				}
-				else if($status['p_turn'] == 'player_2') {
-					$new_turn = 'player_1';
-				}
 			break;
 	}
 
@@ -162,6 +156,30 @@ function reset_status() {
 
 	$st = $mysqli->prepare($sql);
 	$st->execute();
+}
+
+function change_p_turn() {
+	global $mysqli;
+
+	$sql = "SELECT p_turn FROM game_status";
+
+	$st = $mysqli->prepare($sql);
+	$st->execute();
+	$res = $st->get_result();
+	$p_turn = $res->fetch_assoc()['p_turn'];
+
+	if($p_turn == "player_1") {
+		$sql = 'UPDATE game_status SET p_turn="player_2"';
+
+		$st = $mysqli->prepare($sql);
+		$st->execute();
+	}
+	else if($p_turn == "player_2") {
+		$sql = 'UPDATE game_status SET p_turn="player_1"';
+
+		$st = $mysqli->prepare($sql);
+		$st->execute();
+	}
 }
 
 ?>

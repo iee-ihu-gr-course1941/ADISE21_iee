@@ -52,6 +52,9 @@ switch($r = array_shift($request)) {
     case 'reset':
             handle_reset($method);
         break;
+    case 'p_turn':
+            handle_p_turn($method);
+        break;
     case 'users':
             handle_user($method);
         break;
@@ -131,6 +134,12 @@ function handle_remove($method, $input) {
     }
     else {
         header('HTTP/1.1 405 Method Not Allowed');
+    }
+}
+
+function handle_p_turn($method) {
+    if($method == 'PUT') {
+        change_p_turn();
     }
 }
 ?>
