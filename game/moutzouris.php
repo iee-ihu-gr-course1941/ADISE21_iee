@@ -147,6 +147,6 @@ function handle_p_turn($method) {
 }
 
 function handle_check($input) {
-    check_for_win($input['player']);
+    check_for_win($input['token']);
 }
 ?>

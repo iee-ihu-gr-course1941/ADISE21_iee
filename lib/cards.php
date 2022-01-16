@@ -199,8 +199,6 @@ function move_card($x, $token) {
 
     remove_card($player, $row["x"], $row["y"]);
 
-    check_for_win($player);
-
     $sql = 'SELECT x, y, player FROM cards_players';
 
 	$st = $mysqli->prepare($sql);
@@ -211,8 +209,10 @@ function move_card($x, $token) {
 	print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
 }
 
-function check_for_win($player) {
+function check_for_win($token) {
     global $mysqli;
+
+    $player = current_player($token);
 
     if($player == 'player_1') {
         $sql = 'SELECT count(x) as c, x FROM cards_players
@@ -224,13 +224,13 @@ function check_for_win($player) {
         if($res->num_rows > 0) {
             while($row = $res->fetch_assoc()) {
                 if($row['c'] == 1 and $row['x'] == 'K') {
-                    print json_encode(['errormesg'=>'player_1' . "Win!"]);
+                    print json_encode(['errormesg'=>'player_1' . " Win!"]);
                     exit;
                 }
             }
         }
         else {
-            print json_encode(['errormesg'=>'player_2' . "Win!"]);
+            print json_encode(['errormesg'=>'player_2' . " Win!"]);
             exit;
         }
     }
@@ -244,13 +244,13 @@ function check_for_win($player) {
         if($res->num_rows > 0) {
             while($row = $res->fetch_assoc()) {
                 if($row['c'] == 1 and $row['x'] == 'K') {
-                    print json_encode(['errormesg'=>'player_2' . "Win!"]);
+                    print json_encode(['errormesg'=>'player_2' . " Win!"]);
                     exit;
                 }
             }
         }
         else {
-            print json_encode(['errormesg'=>'player_1' . "Win!"]);
+            print json_encode(['errormesg'=>'player_1' . " Win!"]);
             exit;
         }
     }
@@ -267,12 +267,8 @@ function check_for_win($player) {
 
         $st = $mysqli->prepare($sql);
         $st->execute();
-        $res = $st->get_result();
 
-        header('Content-type: application/json');
-        print json_encode($res->fetch_all(MYSQLI_ASSOC), JSON_PRETTY_PRINT);
-
-        print json_encode(['errormesg'=>$player . "Win!"]);
+        echo "<script>alert('$player Win!)</script>";
 	 	exit;
     }
 }
