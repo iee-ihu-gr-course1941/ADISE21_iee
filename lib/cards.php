@@ -131,6 +131,8 @@ function move_card($x, $token) {
                                 $st3 = $mysqli->prepare($sql3);
                                 $st3->bind_param('ss', $row["x"], $row["y"]);
                                 $st3->execute();
+                                
+                                $temp_x = $row["x"];
 
                                 $j++;
                             }
@@ -185,6 +187,8 @@ function move_card($x, $token) {
                                 $st3 = $mysqli->prepare($sql3);
                                 $st3->bind_param('ss', $row["x"], $row["y"]);
                                 $st3->execute();
+                                
+                                $temp_x = $row["x"];
 
                                 $j++;
                             }
@@ -197,7 +201,9 @@ function move_card($x, $token) {
         }
     }
 
-    remove_card($player, $row["x"], $row["y"]);
+    if($temp_x != 'K') {
+        remove_card($player, $row["x"], $row["y"]);
+    }
 
     $sql = 'SELECT x, y, player FROM cards_players';
 
