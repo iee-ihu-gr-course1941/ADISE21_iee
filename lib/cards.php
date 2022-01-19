@@ -409,7 +409,7 @@ function remove_card($player, $x, $y) {
         if ($result->num_rows > 0) {
             // output data of each row
             while($row = $result->fetch_assoc()) {
-                if($row["c"] >= 1) {
+                if($row["c"] > 1) {
                     $sql = "SELECT x, y FROM cards_players
                             WHERE player='player_1' AND x=?";
                     
@@ -446,7 +446,7 @@ function remove_card($player, $x, $y) {
         if ($result->num_rows > 0) {
             // output data of each row
             while($row = $result->fetch_assoc()) {
-                if($row["c"] >= 1) {
+                if($row["c"] > 1) {
                     $sql = "SELECT x, y FROM cards_players
                             WHERE player='player_2' AND x=?";
                     
